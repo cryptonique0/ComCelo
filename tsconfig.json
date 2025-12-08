@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["hardhat.config.ts", "scripts", "test", "contracts", "types", "app", "pages", "next-env.d.ts"],
+  "exclude": ["node_modules"]
+}
