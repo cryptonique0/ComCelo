@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import TutorialModal from './components/TutorialModal';
 
 export default function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [selectedUnit, setSelectedUnit] = useState<number | null>(null);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -72,8 +74,11 @@ export default function HomePage() {
               <span className="relative z-10">⚔️ START BATTLE</span>
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
-            <button className="px-8 py-4 border-2 border-cyan-500/50 rounded-xl font-bold text-lg hover:bg-cyan-500/10 transition-all hover:border-cyan-400">
-              📖 VIEW GUIDE
+            <button
+              onClick={() => setTutorialOpen(true)}
+              className="px-8 py-4 border-2 border-cyan-500/50 rounded-xl font-bold text-lg hover:bg-cyan-500/10 transition-all hover:border-cyan-400"
+            >
+              📖 TUTORIAL
             </button>
           </div>
         </header>
@@ -339,6 +344,8 @@ export default function HomePage() {
           </p>
         </footer>
       </div>
+
+      <TutorialModal isOpen={tutorialOpen} onClose={() => setTutorialOpen(false)} />
     </main>
   );
 }
