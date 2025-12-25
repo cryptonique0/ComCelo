@@ -100,6 +100,7 @@ export default function HomePage() {
   const [signatureState, setSignatureState] = useState<'idle' | 'prompt' | 'signed'>('idle');
   const [lastTxHash, setLastTxHash] = useState<string | null>(null);
   const [lastBlock, setLastBlock] = useState<bigint | null>(null);
+  const [trackInput, setTrackInput] = useState('');
 
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
@@ -160,9 +161,12 @@ export default function HomePage() {
   };
 
   const triggerOnchain = async () => {
-    const txHash = window.prompt('Paste a tx hash to track (MetaTxRelay or any Base tx)');
-    if (!txHash || !txHash.startsWith('0x')) return;
-    await trackTxHash(txHash.trim());
+    const txHash = trackInput.trim();
+    if (!txHash || !txHash.startsWith('0x')) {
+      setLogs((l) => ['❌ Enter a valid tx hash starting with 0x', ...l].slice(0, 8));
+      return;
+    }
+    await trackTxHash(txHash);
   };
 
   const castAbility = (slot: number, label: string) => {
@@ -538,11 +542,19 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-xs text-slate-300">
-                  <button onClick={triggerOnchain} className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-100 hover:bg-emerald-500/25 transition">
-                    Track on-chain tx
-                  </button>
+                <div className="space-y-2 text-xs text-slate-300">
                   <div className="flex items-center gap-2">
+                    <input
+                      value={trackInput}
+                      onChange={(e) => setTrackInput(e.target.value)}
+                      placeholder="0x... (tx hash to track)"
+                      className="flex-1 rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-[12px] focus:border-cyan-400/60 focus:outline-none"
+                    />
+                    <button onClick={triggerOnchain} className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-100 hover:bg-emerald-500/25 transition">
+                      Track tx
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
                     {lastTxHash && (
                       <a href={`https://basescan.org/tx/${lastTxHash}`} target="_blank" rel="noreferrer" className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 hover:border-cyan-400/40 text-cyan-200">
                         View tx {lastTxHash.slice(0, 8)}…

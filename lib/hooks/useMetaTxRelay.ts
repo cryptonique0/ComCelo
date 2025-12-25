@@ -77,14 +77,15 @@ export function useMetaTxRelay() {
   const executeMetaTx = async (
     to: string,
     data: string,
-    relayerUrl: string = '/api/relay'
+    relayerUrl: string = '/api/relay',
+    options?: { skipLoading?: boolean }
   ) => {
     if (!address) {
       throw new Error('Wallet not connected');
     }
 
     try {
-      setLoading(true);
+      if (!options?.skipLoading) setLoading(true);
 
       // Get nonce
       const nonce = await getNonce();
@@ -117,7 +118,7 @@ export function useMetaTxRelay() {
       setError(err as Error);
       throw err;
     } finally {
-      setLoading(false);
+      if (!options?.skipLoading) setLoading(false);
     }
   };
 
@@ -129,6 +130,36 @@ export function useMetaTxRelay() {
     } catch (err) {
       setError(err as Error);
       throw err;
+    }
+  };
+
+  // Execute and auto-track a relayed transaction hash when provided by the relayer
+  const sendAndWait = async (
+    to: string,
+    data: string,
+    relayerUrl: string = '/api/relay'
+  ) => {
+    setLoading(true);
+    try {
+      const result = await executeMetaTx(to, data, relayerUrl, { skipLoading: true });
+      const txHash =
+        result?.txHash ||
+        result?.hash ||
+        result?.transactionHash ||
+        result?.data?.txHash ||
+        result?.data?.hash;
+
+      if (txHash && typeof txHash === 'string' && txHash.startsWith('0x')) {
+        const receipt = await waitForReceipt(txHash as `0x${string}`);
+        return { ...result, txHash, receipt };
+      }
+
+      return result;
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -268,6 +299,7 @@ export function useMetaTxRelay() {
     executeMetaTx,
     executeBatchMetaTx,
     waitForReceipt,
+    sendAndWait,
     isRelayerApproved,
     getDailyGasUsed,
     getRelayerRewards,
