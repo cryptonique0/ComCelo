@@ -1,0 +1,21 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "deployer": "0x7230b1E0efAa8578a418B42ce92bE6c78ceBa59E",
+  "timestamp": "2025-12-25T14:00:00.000Z",
+  "blockNumber": 0,
+  "deploymentMethod": "Remix IDE",
+  "contracts": {
+    "Units": "0x7230b1E0efAa8578a418B42ce92bE6c78ceBa59E",
+    "Treasury": "0xd32283CcD387A58FF14314f2A103b58c96Bb61F9",
+    "Core": "0xa70b1163dB94bfdB38C11B820cF2C7094372c134",
+    "Matchmaker": "0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293"
+  },
+  "notes": "Base Mainnet deployment via Remix IDE. Core 4 contracts deployed successfully.",
+  "verificationStatus": {
+    "Units": "pending",
+    "Treasury": "pending",
+    "Core": "pending",
+    "Matchmaker": "pending"
+  }
+}
