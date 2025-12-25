@@ -214,10 +214,10 @@ async function main() {
 
     const deployment: Deployment = {
       network: network,
-      chainId: chainId,
+      chainId: Number(chainId),
       deployer: deployer.address,
       timestamp: new Date().toISOString(),
-      blockNumber: blockNumber,
+      blockNumber: Number(blockNumber),
       contracts: contracts,
     };
 
