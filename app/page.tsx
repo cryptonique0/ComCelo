@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import TutorialModal from './components/TutorialModal';
+import { useAccount, useBalance, useNetwork } from 'wagmi';
 
 const characters = [
   {
@@ -85,6 +86,21 @@ export default function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [featured, setFeatured] = useState(0);
   const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [turnTime, setTurnTime] = useState(28);
+  const [cooldowns, setCooldowns] = useState<number[]>([3, 1, 0]);
+  const [onchainStatus, setOnchainStatus] = useState<'idle' | 'pending' | 'confirmed'>('idle');
+  const [logs, setLogs] = useState<string[]>([
+    '🛡️ Valor casts Bulwark (+24 shield)',
+    '🏹 Nyx crits Riven (💥 132 dmg)',
+    '✨ Aurora heals party (+48)',
+    '⚡ Riven dashes (AP -2)',
+  ]);
+  const [signatureState, setSignatureState] = useState<'idle' | 'prompt' | 'signed'>('idle');
+
+  const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
+  const { data: balance } = useBalance({ address, enabled: !!address });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -94,12 +110,77 @@ export default function HomePage() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const parallax = (intensity: number) => ({
-    transform: `translate3d(${(mousePosition.x - window.innerWidth / 2) * intensity}px, ${(mousePosition.y - window.innerHeight / 2) * intensity}px, 0)`
-  });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTurnTime((t) => (t > 0 ? t - 1 : 30));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCooldowns((cd) => cd.map((c) => (c > 0 ? c - 1 : 0)));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 3200);
+    return () => clearTimeout(t);
+  }, []);
+
+  const networkLabel = useMemo(() => {
+    if (!chain) return 'Base Mainnet';
+    return `${chain.name}${chain.testnet ? ' (Testnet)' : ''}`;
+  }, [chain]);
+
+  const walletLabel = useMemo(() => {
+    if (!address) return 'Not connected';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  }, [address]);
+
+  const triggerOnchain = () => {
+    setOnchainStatus('pending');
+    setLogs((l) => [`⛓️ On-chain action submitted`, ...l].slice(0, 8));
+    setTimeout(() => {
+      setOnchainStatus('confirmed');
+      setLogs((l) => [`✅ Confirmed on ${networkLabel}`, ...l].slice(0, 8));
+      setTimeout(() => setOnchainStatus('idle'), 2000);
+    }, 1600);
+  };
+
+  const castAbility = (slot: number, label: string) => {
+    setCooldowns((cd) => cd.map((c, i) => (i === slot ? 5 : c)));
+    setLogs((l) => [`🎯 ${label} cast (cd 5s)`, ...l].slice(0, 8));
+  };
+
+  const requestSignature = () => {
+    setSignatureState('prompt');
+    setTimeout(() => setSignatureState('signed'), 1200);
+    setTimeout(() => setSignatureState('idle'), 2600);
+  };
+
+  const parallax = (intensity: number) => {
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1440;
+    const h = typeof window !== 'undefined' ? window.innerHeight : 900;
+    return {
+      transform: `translate3d(${(mousePosition.x - w / 2) * intensity}px, ${(mousePosition.y - h / 2) * intensity}px, 0)`
+    };
+  };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+      {showSplash && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-xl animate-splash-fade">
+          <div className="relative flex flex-col items-center gap-4 text-center px-6">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-3xl shadow-2xl shadow-cyan-500/30 animate-pulse-soft">⚔️</div>
+            <p className="uppercase tracking-[0.35em] text-xs text-cyan-200">ComCelo</p>
+            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-cyan-300 via-indigo-300 to-purple-300 bg-clip-text text-transparent">Tactical On-Chain Arena</h1>
+            <p className="text-sm text-slate-300">Logo glow → emblem assemble → ready up</p>
+          </div>
+        </div>
+      )}
+
       {/* Layered neon background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
@@ -363,10 +444,24 @@ export default function HomePage() {
                 <div className="mt-3 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-lg">🪪</div>
                   <div>
-                    <p className="text-white font-semibold text-sm">0x7E5F...Bdf</p>
-                    <p className="text-emerald-300 text-xs">Connected · Base Mainnet</p>
+                    <p className="text-white font-semibold text-sm">{walletLabel}</p>
+                    <p className="text-emerald-300 text-xs">{isConnected ? `Connected · ${networkLabel}` : 'Not connected'}</p>
+                    <p className="text-slate-400 text-[11px]">{balance ? `${Number(balance.formatted).toFixed(4)} ${balance.symbol}` : isConnected ? 'Fetching balance...' : '—'}</p>
                   </div>
-                  <span className="ml-auto px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-100 text-xs">Signature Ready</span>
+                  <button
+                    onClick={requestSignature}
+                    className={`ml-auto px-3 py-1 rounded-full border text-xs transition ${
+                      signatureState === 'prompt'
+                        ? 'bg-amber-500/20 border-amber-400/40 text-amber-100'
+                        : signatureState === 'signed'
+                          ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-100'
+                          : 'bg-indigo-500/20 border-indigo-400/40 text-indigo-100'
+                    }`}
+                  >
+                    {signatureState === 'prompt' && 'Awaiting signature'}
+                    {signatureState === 'signed' && 'Signature captured'}
+                    {signatureState === 'idle' && 'Signature ready'}
+                  </button>
                 </div>
                 <p className="text-xs text-slate-500 mt-2">On-chain confirmation + cooldown ring</p>
               </div>
@@ -375,13 +470,19 @@ export default function HomePage() {
               <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
                 <p className="text-xs text-slate-400 flex items-center gap-2">🧩 Abilities & Cooldowns</p>
                 <div className="mt-3 flex gap-3">
-                  {[{icon:'🌀',label:'Warp',cd:3},{icon:'💥',label:'Burst',cd:1},{icon:'🛡️',label:'Guard',cd:0}].map(btn => (
-                    <div key={btn.label} className="relative w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center text-lg text-white overflow-hidden">
-                      {btn.cd > 0 && <div className="absolute inset-0 hud-cooldown" />}
+                  {[{icon:'🌀',label:'Warp'},{icon:'💥',label:'Burst'},{icon:'🛡️',label:'Guard'}].map((btn, idx) => (
+                    <button
+                      key={btn.label}
+                      onClick={() => castAbility(idx, btn.label)}
+                      className="relative w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center text-lg text-white overflow-hidden focus:outline-none"
+                      disabled={cooldowns[idx] > 0}
+                      title={cooldowns[idx] > 0 ? `Cooldown ${cooldowns[idx]}s` : 'Ready'}
+                    >
+                      {cooldowns[idx] > 0 && <div className="absolute inset-0 hud-cooldown" />}
                       <span className="text-xl">{btn.icon}</span>
                       <span className="text-[11px] font-semibold">{btn.label}</span>
-                      {btn.cd > 0 && <span className="absolute bottom-1 text-[11px] text-amber-300">{btn.cd}s</span>}
-                    </div>
+                      {cooldowns[idx] > 0 && <span className="absolute bottom-1 text-[11px] text-amber-300">{cooldowns[idx]}s</span>}
+                    </button>
                   ))}
                   <div className="flex flex-col justify-between text-xs text-slate-400">
                     <span className="px-2 py-1 rounded-full bg-slate-900 border border-slate-800">🎯 Selected: Valor</span>
@@ -395,13 +496,12 @@ export default function HomePage() {
               <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-300">
                   <span>📜 Action Log</span>
-                  <span className="px-2 py-1 rounded-full bg-rose-500/20 text-rose-100 border border-rose-400/30">Turn 6 · 22s</span>
+                  <span className="px-2 py-1 rounded-full bg-rose-500/20 text-rose-100 border border-rose-400/30">Turn 6 · {turnTime}s</span>
                 </div>
                 <div className="space-y-2 text-xs text-slate-300 max-h-24 overflow-hidden">
-                  <p>🛡️ Valor casts Bulwark (+24 shield)</p>
-                  <p>🏹 Nyx crits Riven (💥 132 dmg)</p>
-                  <p>✨ Aurora heals party (+48)</p>
-                  <p>⚡ Riven dashes (AP -2)</p>
+                  {logs.map((log, i) => (
+                    <p key={i}>{log}</p>
+                  ))}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-300">
                   <div className="w-16 h-16 rounded-xl border border-slate-800 bg-slate-900/60 grid grid-cols-3 gap-[2px] p-1 text-[10px] text-center">
@@ -416,9 +516,17 @@ export default function HomePage() {
                     </div>
                     <div className="px-2 py-2 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
                       <span>🧾 On-chain</span>
-                      <span className="font-semibold text-emerald-200">Confirmed</span>
+                      <span className={`font-semibold ${onchainStatus === 'pending' ? 'text-amber-200' : onchainStatus === 'confirmed' ? 'text-emerald-200' : 'text-slate-200'}`}>
+                        {onchainStatus === 'pending' ? 'Pending...' : onchainStatus === 'confirmed' ? 'Confirmed' : 'Idle'}
+                      </span>
                     </div>
                   </div>
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-300">
+                  <button onClick={triggerOnchain} className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-100 hover:bg-emerald-500/25 transition">
+                    Submit on-chain action
+                  </button>
+                  <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">Latency ~450ms</span>
                 </div>
               </div>
             </div>
