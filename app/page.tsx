@@ -330,6 +330,142 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* HUD SHOWCASE */}
+        <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+          <div className="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-2xl shadow-cyan-500/10 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Core HUD</p>
+                <h3 className="text-2xl font-black">Battle heads-up display</h3>
+                <p className="text-slate-400 text-sm">Designed for small screens with thick outlines and bold shapes (chibi-friendly).</p>
+              </div>
+              <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-100">Readable @ mobile</span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              {/* Health / Energy */}
+              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-xs text-slate-400 flex items-center gap-2">❤️ Health & ⚡ Energy</p>
+                <div className="mt-2 space-y-2">
+                  <div className="h-3 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
+                    <div className="h-full bg-gradient-to-r from-rose-400 to-orange-400 w-4/5 animate-hud-fill" />
+                  </div>
+                  <div className="h-3 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
+                    <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 w-2/3 animate-hud-fill" style={{ animationDelay: '0.1s' }} />
+                  </div>
+                </div>
+                <p className="text-xs text-slate-500 mt-2">Floating damage numbers appear here</p>
+              </div>
+
+              {/* Wallet + Network */}
+              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-xs text-slate-400 flex items-center gap-2">👛 Wallet & ⛓ Network</p>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-lg">🪪</div>
+                  <div>
+                    <p className="text-white font-semibold text-sm">0x7E5F...Bdf</p>
+                    <p className="text-emerald-300 text-xs">Connected · Base Mainnet</p>
+                  </div>
+                  <span className="ml-auto px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-100 text-xs">Signature Ready</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-2">On-chain confirmation + cooldown ring</p>
+              </div>
+
+              {/* Action buttons */}
+              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-xs text-slate-400 flex items-center gap-2">🧩 Abilities & Cooldowns</p>
+                <div className="mt-3 flex gap-3">
+                  {[{icon:'🌀',label:'Warp',cd:3},{icon:'💥',label:'Burst',cd:1},{icon:'🛡️',label:'Guard',cd:0}].map(btn => (
+                    <div key={btn.label} className="relative w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center text-lg text-white overflow-hidden">
+                      {btn.cd > 0 && <div className="absolute inset-0 hud-cooldown" />}
+                      <span className="text-xl">{btn.icon}</span>
+                      <span className="text-[11px] font-semibold">{btn.label}</span>
+                      {btn.cd > 0 && <span className="absolute bottom-1 text-[11px] text-amber-300">{btn.cd}s</span>}
+                    </div>
+                  ))}
+                  <div className="flex flex-col justify-between text-xs text-slate-400">
+                    <span className="px-2 py-1 rounded-full bg-slate-900 border border-slate-800">🎯 Selected: Valor</span>
+                    <span className="px-2 py-1 rounded-full bg-slate-900 border border-slate-800">🔔 Buffs: Barrier, Haste</span>
+                    <span className="px-2 py-1 rounded-full bg-slate-900 border border-slate-800">🚫 Debuff: Silence (4s)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Log / Timer / Mini-map */}
+              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
+                <div className="flex items-center justify-between text-xs text-slate-300">
+                  <span>📜 Action Log</span>
+                  <span className="px-2 py-1 rounded-full bg-rose-500/20 text-rose-100 border border-rose-400/30">Turn 6 · 22s</span>
+                </div>
+                <div className="space-y-2 text-xs text-slate-300 max-h-24 overflow-hidden">
+                  <p>🛡️ Valor casts Bulwark (+24 shield)</p>
+                  <p>🏹 Nyx crits Riven (💥 132 dmg)</p>
+                  <p>✨ Aurora heals party (+48)</p>
+                  <p>⚡ Riven dashes (AP -2)</p>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-slate-300">
+                  <div className="w-16 h-16 rounded-xl border border-slate-800 bg-slate-900/60 grid grid-cols-3 gap-[2px] p-1 text-[10px] text-center">
+                    {[...Array(9)].map((_, i) => (
+                      <div key={i} className="rounded bg-slate-800/80 flex items-center justify-center text-slate-400">{i === 4 ? 'X' : ''}</div>
+                    ))}
+                  </div>
+                  <div className="flex-1 grid grid-cols-2 gap-2">
+                    <div className="px-2 py-2 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+                      <span>🪙 Credits</span>
+                      <span className="font-semibold text-amber-200">1,240</span>
+                    </div>
+                    <div className="px-2 py-2 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+                      <span>🧾 On-chain</span>
+                      <span className="font-semibold text-emerald-200">Confirmed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ART STYLE MENU */}
+          <div className="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-2xl shadow-fuchsia-500/10 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-fuchsia-300">Visual Themes</p>
+                <h3 className="text-2xl font-black">Pick a style</h3>
+                <p className="text-slate-400 text-sm">Optimized for social feeds and fast loads.</p>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-100 text-xs">Swap-ready</span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3 text-sm">
+              {[ 
+                'Chibi / Super-Deformed',
+                'Flat Vector (mobile-friendly)',
+                'Outline + Fill (Cartoon Inked)',
+                'Hand-Painted Fantasy',
+                'Cel-Shaded Anime',
+                'Afro-Futurism / Regional'
+              ].map(style => (
+                <div key={style} className="rounded-2xl border border-slate-800 bg-slate-950/60 px-3 py-3 flex items-center gap-2 hover:border-cyan-400/40 transition">
+                  <span className="text-lg">🎨</span>
+                  <div>
+                    <p className="text-white font-semibold leading-tight">{style}</p>
+                    <p className="text-[11px] text-slate-400">Bold colors, small-screen readable</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4 text-sm text-slate-200 space-y-2">
+              <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Splash intro (3-5s)</p>
+              <p>Logo glow-in, emblem particle assemble, or map zoom → title. Minimal, fast, memorable.</p>
+              <div className="flex gap-3 text-xs text-slate-300 flex-wrap">
+                <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">Logo fade + glow</span>
+                <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">Map zoom to arena</span>
+                <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">Sigil assemble</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* GAME MODES & LOOPS */}
         <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
           <div className="p-6 rounded-3xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl space-y-4 shadow-2xl shadow-indigo-500/10">
