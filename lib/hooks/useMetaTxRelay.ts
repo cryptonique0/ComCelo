@@ -121,6 +121,17 @@ export function useMetaTxRelay() {
     }
   };
 
+  // Wait for a transaction receipt (Base mainnet)
+  const waitForReceipt = async (hash: `0x${string}`) => {
+    if (!publicClient) throw new Error('No public client');
+    try {
+      return await publicClient.waitForTransactionReceipt({ hash });
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    }
+  };
+
   // Execute batch meta transactions
   const executeBatchMetaTx = async (
     targets: string[],
@@ -256,6 +267,7 @@ export function useMetaTxRelay() {
     signMetaTx,
     executeMetaTx,
     executeBatchMetaTx,
+    waitForReceipt,
     isRelayerApproved,
     getDailyGasUsed,
     getRelayerRewards,

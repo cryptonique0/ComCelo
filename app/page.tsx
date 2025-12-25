@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import TutorialModal from './components/TutorialModal';
 import { useAccount, useBalance, useNetwork } from 'wagmi';
+import { useMetaTxRelay } from '@/lib/hooks/useMetaTxRelay';
 
 const characters = [
   {
@@ -97,10 +98,13 @@ export default function HomePage() {
     '⚡ Riven dashes (AP -2)',
   ]);
   const [signatureState, setSignatureState] = useState<'idle' | 'prompt' | 'signed'>('idle');
+  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
+  const [lastBlock, setLastBlock] = useState<bigint | null>(null);
 
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { data: balance } = useBalance({ address, enabled: !!address });
+  const { executeMetaTx, waitForReceipt } = useMetaTxRelay();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -139,14 +143,26 @@ export default function HomePage() {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   }, [address]);
 
-  const triggerOnchain = () => {
-    setOnchainStatus('pending');
-    setLogs((l) => [`⛓️ On-chain action submitted`, ...l].slice(0, 8));
-    setTimeout(() => {
+  const trackTxHash = async (hash: string) => {
+    try {
+      setOnchainStatus('pending');
+      setLogs((l) => [`⛓️ Tracking ${hash.slice(0, 10)}…`, ...l].slice(0, 8));
+      const receipt = await waitForReceipt(hash as `0x${string}`);
       setOnchainStatus('confirmed');
-      setLogs((l) => [`✅ Confirmed on ${networkLabel}`, ...l].slice(0, 8));
+      setLastTxHash(hash);
+      setLastBlock(receipt.blockNumber);
+      setLogs((l) => [`✅ Confirmed in block ${receipt.blockNumber}`, ...l].slice(0, 8));
       setTimeout(() => setOnchainStatus('idle'), 2000);
-    }, 1600);
+    } catch (err: any) {
+      setOnchainStatus('idle');
+      setLogs((l) => [`❌ ${err?.message || 'Receipt error'}`, ...l].slice(0, 8));
+    }
+  };
+
+  const triggerOnchain = async () => {
+    const txHash = window.prompt('Paste a tx hash to track (MetaTxRelay or any Base tx)');
+    if (!txHash || !txHash.startsWith('0x')) return;
+    await trackTxHash(txHash.trim());
   };
 
   const castAbility = (slot: number, label: string) => {
@@ -524,9 +540,16 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center justify-between text-xs text-slate-300">
                   <button onClick={triggerOnchain} className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-100 hover:bg-emerald-500/25 transition">
-                    Submit on-chain action
+                    Track on-chain tx
                   </button>
-                  <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">Latency ~450ms</span>
+                  <div className="flex items-center gap-2">
+                    {lastTxHash && (
+                      <a href={`https://basescan.org/tx/${lastTxHash}`} target="_blank" rel="noreferrer" className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 hover:border-cyan-400/40 text-cyan-200">
+                        View tx {lastTxHash.slice(0, 8)}…
+                      </a>
+                    )}
+                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800">{lastBlock ? `Block ${lastBlock.toString()}` : 'Latency ~450ms'}</span>
+                  </div>
                 </div>
               </div>
             </div>
