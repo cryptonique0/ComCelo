@@ -9,9 +9,35 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "jsx": "react-jsx",
-    "allowSyntheticDefaultImports": true
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["hardhat.config.ts", "scripts", "test", "contracts", "types", "app", "pages", "next-env.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "hardhat.config.ts",
+    "scripts",
+    "test",
+    "contracts",
+    "types",
+    "app",
+    "pages",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
