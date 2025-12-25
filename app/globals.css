@@ -70,6 +70,26 @@ a {
   }
 }
 
+@keyframes floaty {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.01);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 0.9;
+    filter: blur(18px);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(24px);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
 }
@@ -90,6 +110,14 @@ a {
 
 .animate-bounce-slow {
   animation: bounceSlow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 5s ease-in-out infinite;
 }
 
 .delay-300 {
