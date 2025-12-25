@@ -180,6 +180,34 @@ async function main() {
     console.log(`    ✓ ComCeloRewards: ${rewardsAddress}\n`);
     txCount++;
 
+    // 11b. Deploy ComCeloCrossChainRewards (Base-side)
+    console.log("11b. Deploying ComCeloCrossChainRewards...");
+    const CrossRewardsFactory = await ethers.getContractFactory("ComCeloCrossChainRewards");
+    const crossRewards = await CrossRewardsFactory.deploy(rewardsAddress, deployer.address);
+    await crossRewards.waitForDeployment();
+    const crossRewardsAddress = await crossRewards.getAddress();
+    deploymentAddresses["ComCeloCrossChainRewards"] = crossRewardsAddress;
+    console.log(`    ✓ ComCeloCrossChainRewards: ${crossRewardsAddress}\n`);
+    txCount++;
+
+    // 11c. Deploy ComCeloMetaTxRelay
+    console.log("11c. Deploying ComCeloMetaTxRelay...");
+    const MetaTxRelayFactory = await ethers.getContractFactory("ComCeloMetaTxRelay");
+    const metaTxRelay = await MetaTxRelayFactory.deploy(coreAddress);
+    await metaTxRelay.waitForDeployment();
+    const metaTxRelayAddress = await metaTxRelay.getAddress();
+    deploymentAddresses["ComCeloMetaTxRelay"] = metaTxRelayAddress;
+    console.log(`    ✓ ComCeloMetaTxRelay: ${metaTxRelayAddress}\n`);
+    txCount++;
+
+    // Update MetaTxRelay with contract addresses
+    console.log("11d. Configuring ComCeloMetaTxRelay...");
+    await metaTxRelay.setItemsContractAddress(itemsAddress);
+    await metaTxRelay.setCrossChainRewardsAddress(crossRewardsAddress);
+    await metaTxRelay.setGovernanceContractAddress(governanceAddress);
+    console.log(`    ✓ MetaTxRelay configured with contract addresses\n`);
+    txCount += 3;
+
     // 12. Deploy ComCeloOptimisticOracle (Base-specific)
     console.log("12. Deploying ComCeloOptimisticOracle...");
     const OracleFactory = await ethers.getContractFactory("ComCeloOptimisticOracle");
@@ -189,16 +217,6 @@ async function main() {
     deploymentAddresses["ComCeloOptimisticOracle"] = oracleAddress;
     console.log(`    ✓ ComCeloOptimisticOracle: ${oracleAddress}\n`);
     txCount++;
-
-      // 11b. Deploy ComCeloCrossChainRewards (Base-side)
-      console.log("11b. Deploying ComCeloCrossChainRewards...");
-      const CrossRewardsFactory = await ethers.getContractFactory("ComCeloCrossChainRewards");
-      const crossRewards = await CrossRewardsFactory.deploy(rewardsAddress, deployer.address);
-      await crossRewards.waitForDeployment();
-      const crossRewardsAddress = await crossRewards.getAddress();
-      deploymentAddresses["ComCeloCrossChainRewards"] = crossRewardsAddress;
-      console.log(`    ✓ ComCeloCrossChainRewards: ${crossRewardsAddress}\n`);
-      txCount++;
 
     // 13. Deploy ComCeloBaseSpokePool (Base-specific)
     console.log("13. Deploying ComCeloBaseSpokePool...");
