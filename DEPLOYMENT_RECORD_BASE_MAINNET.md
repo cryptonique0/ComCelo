@@ -5,10 +5,12 @@
 ### Contract Addresses
 
 ```
-Units:      0x7230b1E0efAa8578a418B42ce92bE6c78ceBa59E
-Treasury:   0xd32283CcD387A58FF14314f2A103b58c96Bb61F9
-Core:       0xa70b1163dB94bfdB38C11B820cF2C7094372c134
-Matchmaker: 0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293
+Units:        0x7230b1E0efAa8578a418B42ce92bE6c78ceBa59E
+Treasury:     0xd32283CcD387A58FF14314f2A103b58c96Bb61F9
+Core:         0xa70b1163dB94bfdB38C11B820cF2C7094372c134
+Matchmaker:   0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293
+Achievements: 0xB73cC20D1C7aFA00f3c8C0e896a521D2E5bAE846
+AntiCheat:    0x3B4b40e5AA58B926C330F2581C38d94bd0302633
 ```
 
 ### BaseScan Links
@@ -17,6 +19,8 @@ Matchmaker: 0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293
 - **Treasury:** https://basescan.org/address/0xd32283CcD387A58FF14314f2A103b58c96Bb61F9
 - **Core:** https://basescan.org/address/0xa70b1163dB94bfdB38C11B820cF2C7094372c134
 - **Matchmaker:** https://basescan.org/address/0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293
+- **Achievements:** https://basescan.org/address/0xB73cC20D1C7aFA00f3c8C0e896a521D2E5bAE846
+- **AntiCheat:** https://basescan.org/address/0x3B4b40e5AA58B926C330F2581C38d94bd0302633
 
 ## Deployment Method
 
@@ -71,7 +75,9 @@ All feature contracts reference Core address in their constructors.
 ✅ ComCeloTreasury deployed
 ✅ ComCeloCore deployed
 ✅ ComCeloMatchmaker deployed
-✅ Address constants added to all core contracts
+✅ ComCeloAchievements deployed
+✅ ComCeloAntiCheat deployed
+✅ Address constants added to all deployed contracts
 ```
 
 ## Environment Variables
@@ -81,6 +87,8 @@ NEXT_PUBLIC_UNITS_CONTRACT_ADDRESS=0x7230b1E0efAa8578a418B42ce92bE6c78ceBa59E
 NEXT_PUBLIC_TREASURY_CONTRACT_ADDRESS=0xd32283CcD387A58FF14314f2A103b58c96Bb61F9
 NEXT_PUBLIC_GAME_CONTRACT_ADDRESS=0xa70b1163dB94bfdB38C11B820cF2C7094372c134
 NEXT_PUBLIC_MATCHMAKER_CONTRACT_ADDRESS=0x7F5ACfe82A31498e057ebE2fE11be6AB0135a293
+NEXT_PUBLIC_ACHIEVEMENTS_CONTRACT_ADDRESS=0xB73cC20D1C7aFA00f3c8C0e896a521D2E5bAE846
+NEXT_PUBLIC_ANTICHEAT_CONTRACT_ADDRESS=0x3B4b40e5AA58B926C330F2581C38d94bd0302633
 ```
 
 ## Verification Status
@@ -89,6 +97,8 @@ NEXT_PUBLIC_MATCHMAKER_CONTRACT_ADDRESS=0x7F5ACfe82A31498e057ebE2fE11be6AB0135a2
 - [ ] Treasury verified on BaseScan
 - [ ] Core verified on BaseScan
 - [ ] Matchmaker verified on BaseScan
+- [ ] Achievements verified on BaseScan
+- [ ] AntiCheat verified on BaseScan
 
 ## Security Checklist
 
@@ -102,4 +112,4 @@ NEXT_PUBLIC_MATCHMAKER_CONTRACT_ADDRESS=0x7F5ACfe82A31498e057ebE2fE11be6AB0135a2
 
 **Deployed:** December 25, 2025  
 **Network:** Base Mainnet (Chain ID: 8453)  
-**Status:** Core 4 contracts live ✅
+**Status:** 6 contracts live ✅ (Core 4 + Achievements + AntiCheat)
