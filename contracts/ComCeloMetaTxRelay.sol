@@ -77,35 +77,38 @@ contract ComCeloMetaTxRelay is Ownable, Pausable {
         require(nonce == nonces[signer], "Invalid nonce");
         require(gasLimit <= maxGasSponsorPerTx, "Gas limit exceeds max");
         require(msg.value >= gasLimit, "Insufficient gas sponsorship");
-
-        // Check daily limit
         require(gasSpent[signer] + gasLimit <= maxDailyGasPerUser, "Daily limit exceeded");
 
         // Verify signature
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                "\x19Ethereum Signed Message:\n32",
-                keccak256(abi.encode(signer, target, functionData, nonce, gasLimit, address(this)))
-            )
-        );
+        {
+            bytes32 digest = keccak256(
+                abi.encodePacked(
+                    "\x19Ethereum Signed Message:\n32",
+                    keccak256(abi.encode(signer, target, functionData, nonce, gasLimit, address(this)))
+                )
+            );
+            require(digest.recover(signature) == signer, "Invalid signature");
+        }
 
-        address recovered = digest.recover(signature);
-        require(recovered == signer, "Invalid signature");
-
+        // Update state
         nonces[signer]++;
         gasSpent[signer] += gasLimit;
         totalGasSponsored += gasLimit;
 
         // Execute transaction
-        uint256 startGas = gasleft();
-        (bool success, bytes memory result) = target.call{value: 0}(functionData);
-        require(success, "Meta-tx execution failed");
-        uint256 gasUsed = startGas - gasleft();
+        bytes memory result;
+        {
+            (bool success, bytes memory data) = target.call{value: 0}(functionData);
+            require(success, "Meta-tx execution failed");
+            result = data;
+        }
 
-        // Reward relayer (10% of sponsored gas)
-        uint256 relayerReward = (gasLimit * relayerRewardPercent) / 100;
-        (bool rewardSuccess,) = msg.sender.call{value: relayerReward}("");
-        require(rewardSuccess, "Relayer reward transfer failed");
+        // Reward relayer
+        {
+            uint256 relayerReward = (gasLimit * relayerRewardPercent) / 100;
+            (bool rewardSuccess,) = msg.sender.call{value: relayerReward}("");
+            require(rewardSuccess, "Relayer reward transfer failed");
+        }
 
         emit MetaTxExecuted(msg.sender, signer, nonce, gasLimit, target);
         return result;
@@ -123,30 +126,32 @@ contract ComCeloMetaTxRelay is Ownable, Pausable {
         require(targets.length == callDatas.length && callDatas.length == gasLimits.length, "Array length mismatch");
         require(nonce == nonces[signer], "Invalid nonce");
 
-        // Verify signature
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                "\x19Ethereum Signed Message:\n32",
-                keccak256(abi.encode(signer, targets, callDatas, gasLimits, nonce, address(this)))
-            )
-        );
+        uint256 totalGasLimit;
+        {
+            // Verify signature
+            bytes32 digest = keccak256(
+                abi.encodePacked(
+                    "\x19Ethereum Signed Message:\n32",
+                    keccak256(abi.encode(signer, targets, callDatas, gasLimits, nonce, address(this)))
+                )
+            );
+            require(digest.recover(signature) == signer, "Invalid signature");
 
-        address recovered = digest.recover(signature);
-        require(recovered == signer, "Invalid signature");
-
-        uint256 totalGasLimit = 0;
-        for (uint i = 0; i < gasLimits.length; i++) {
-            totalGasLimit += gasLimits[i];
+            // Calculate total gas
+            for (uint i = 0; i < gasLimits.length; i++) {
+                totalGasLimit += gasLimits[i];
+            }
         }
 
         require(gasSpent[signer] + totalGasLimit <= maxDailyGasPerUser, "Daily limit exceeded");
         require(msg.value >= totalGasLimit, "Insufficient gas sponsorship");
 
+        // Update state
         nonces[signer]++;
         gasSpent[signer] += totalGasLimit;
         totalGasSponsored += totalGasLimit;
 
-        // Execute all transactions in batch
+        // Store batch and execute
         batchId = nextBatchId++;
         batches[batchId] = BatchTransaction({
             targets: targets,
@@ -162,9 +167,11 @@ contract ComCeloMetaTxRelay is Ownable, Pausable {
         }
 
         // Reward relayer
-        uint256 relayerReward = (totalGasLimit * relayerRewardPercent) / 100;
-        (bool rewardSuccess,) = msg.sender.call{value: relayerReward}("");
-        require(rewardSuccess, "Relayer reward transfer failed");
+        {
+            uint256 relayerReward = (totalGasLimit * relayerRewardPercent) / 100;
+            (bool rewardSuccess,) = msg.sender.call{value: relayerReward}("");
+            require(rewardSuccess, "Relayer reward transfer failed");
+        }
 
         emit BatchTxExecuted(batchId, msg.sender, signer, targets.length, totalGasLimit);
     }
