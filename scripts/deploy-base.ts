@@ -59,6 +59,16 @@ async function main() {
     deploymentAddresses["ComCeloMatchmaker"] = matchmakerAddress;
     console.log(`   ✓ ComCeloMatchmaker: ${matchmakerAddress}\n`);
     txCount++;
+    
+      // 3b. Deploy ComCeloSessionManager
+      console.log("3b. Deploying ComCeloSessionManager...");
+      const SessionFactory = await ethers.getContractFactory("ComCeloSessionManager");
+      const sessionManager = await SessionFactory.deploy();
+      await sessionManager.waitForDeployment();
+      const sessionManagerAddress = await sessionManager.getAddress();
+      deploymentAddresses["ComCeloSessionManager"] = sessionManagerAddress;
+      console.log(`   ✓ ComCeloSessionManager: ${sessionManagerAddress}\n`);
+      txCount++;
 
     // 4. Deploy ComCeloTreasury
     console.log("4. Deploying ComCeloTreasury...");
@@ -69,6 +79,16 @@ async function main() {
     deploymentAddresses["ComCeloTreasury"] = treasuryAddress;
     console.log(`   ✓ ComCeloTreasury: ${treasuryAddress}\n`);
     txCount++;
+    
+      // 4b. Deploy ComCeloGovernance
+      console.log("4b. Deploying ComCeloGovernance...");
+      const GovernanceFactory = await ethers.getContractFactory("ComCeloGovernance");
+      const governance = await GovernanceFactory.deploy();
+      await governance.waitForDeployment();
+      const governanceAddress = await governance.getAddress();
+      deploymentAddresses["ComCeloGovernance"] = governanceAddress;
+      console.log(`   ✓ ComCeloGovernance: ${governanceAddress}\n`);
+      txCount++;
 
     // 5. Deploy ComCeloItems (ERC1155)
     console.log("5. Deploying ComCeloItems (ERC1155)...");
@@ -79,6 +99,26 @@ async function main() {
     deploymentAddresses["ComCeloItems"] = itemsAddress;
     console.log(`   ✓ ComCeloItems: ${itemsAddress}\n`);
     txCount++;
+    
+      // 5b. Deploy ComCeloPlayerStats
+      console.log("5b. Deploying ComCeloPlayerStats...");
+      const StatsFactory = await ethers.getContractFactory("ComCeloPlayerStats");
+      const stats = await StatsFactory.deploy();
+      await stats.waitForDeployment();
+      const statsAddress = await stats.getAddress();
+      deploymentAddresses["ComCeloPlayerStats"] = statsAddress;
+      console.log(`   ✓ ComCeloPlayerStats: ${statsAddress}\n`);
+      txCount++;
+    
+      // 5c. Deploy ComCeloAntiCheat
+      console.log("5c. Deploying ComCeloAntiCheat...");
+      const AntiCheatFactory = await ethers.getContractFactory("ComCeloAntiCheat");
+      const antiCheat = await AntiCheatFactory.deploy();
+      await antiCheat.waitForDeployment();
+      const antiCheatAddress = await antiCheat.getAddress();
+      deploymentAddresses["ComCeloAntiCheat"] = antiCheatAddress;
+      console.log(`   ✓ ComCeloAntiCheat: ${antiCheatAddress}\n`);
+      txCount++;
 
     // 6. Deploy ComCeloSeasons
     console.log("6. Deploying ComCeloSeasons...");
@@ -149,6 +189,16 @@ async function main() {
     deploymentAddresses["ComCeloOptimisticOracle"] = oracleAddress;
     console.log(`    ✓ ComCeloOptimisticOracle: ${oracleAddress}\n`);
     txCount++;
+
+      // 11b. Deploy ComCeloCrossChainRewards (Base-side)
+      console.log("11b. Deploying ComCeloCrossChainRewards...");
+      const CrossRewardsFactory = await ethers.getContractFactory("ComCeloCrossChainRewards");
+      const crossRewards = await CrossRewardsFactory.deploy(rewardsAddress, deployer.address);
+      await crossRewards.waitForDeployment();
+      const crossRewardsAddress = await crossRewards.getAddress();
+      deploymentAddresses["ComCeloCrossChainRewards"] = crossRewardsAddress;
+      console.log(`    ✓ ComCeloCrossChainRewards: ${crossRewardsAddress}\n`);
+      txCount++;
 
     // 13. Deploy ComCeloBaseSpokePool (Base-specific)
     console.log("13. Deploying ComCeloBaseSpokePool...");

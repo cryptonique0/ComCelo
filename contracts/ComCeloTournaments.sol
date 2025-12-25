@@ -25,24 +25,27 @@ contract ComCeloTournaments is Ownable, Pausable {
         address winner;
     }
 
-    struct TournamentBracket {
-        uint256 tournamentId;
+    struct Match {
         address player1;
         address player2;
         address winner;
+        uint256 round;
         bool completed;
     }
 
     mapping(uint256 => Tournament) public tournaments;
     mapping(uint256 => address[]) public participants;
-    mapping(uint256 => TournamentBracket[]) public brackets;
+    mapping(uint256 => Match[]) public matches;
+    mapping(uint256 => uint256) public currentRound;
 
     uint256 public nextTournamentId;
     mapping(address => mapping(uint256 => bool)) public playerRegistered;
 
     event TournamentCreated(uint256 indexed tournamentId, string name, uint256 entryFee);
     event PlayerRegistered(uint256 indexed tournamentId, address indexed player);
-    event BracketCreated(uint256 indexed tournamentId, uint256 bracketId, address player1, address player2);
+    event MatchCreated(uint256 indexed tournamentId, uint256 matchId, uint256 round, address player1, address player2);
+    event MatchCompleted(uint256 indexed tournamentId, uint256 matchId, address winner);
+    event RoundAdvanced(uint256 indexed tournamentId, uint256 newRound);
     event TournamentCompleted(uint256 indexed tournamentId, address indexed winner);
 
     constructor() {
@@ -90,35 +93,102 @@ contract ComCeloTournaments is Ownable, Pausable {
     function startTournament(uint256 tournamentId) external onlyOwner {
         Tournament storage tournament = tournaments[tournamentId];
         require(tournament.status == TournamentStatus.Registration, "Already started");
-        tournament.status = TournamentStatus.InProgress;
-
         address[] storage tournamentParticipants = participants[tournamentId];
-        require(tournamentParticipants.length > 0, "No participants");
+        require(tournamentParticipants.length > 1, "Need at least 2 players");
 
-        // Create initial brackets (simplified single elimination)
-        for (uint256 i = 0; i < tournamentParticipants.length - 1; i += 2) {
-            TournamentBracket memory bracket = TournamentBracket({
-                tournamentId: tournamentId,
-                player1: tournamentParticipants[i],
-                player2: tournamentParticipants[i + 1],
-                winner: address(0),
-                completed: false
-            });
+        tournament.status = TournamentStatus.InProgress;
+        currentRound[tournamentId] = 1;
 
-            brackets[tournamentId].push(bracket);
-            emit BracketCreated(tournamentId, brackets[tournamentId].length - 1, bracket.player1, bracket.player2);
+        _createRoundMatches(tournamentId, tournamentParticipants, 1);
+        emit RoundAdvanced(tournamentId, 1);
+    }
+
+    function recordMatchResult(uint256 tournamentId, uint256 matchId, address winner) external onlyOwner {
+        require(matchId < matches[tournamentId].length, "Invalid match");
+        Match storage m = matches[tournamentId][matchId];
+        require(!m.completed, "Match completed");
+        require(winner == m.player1 || winner == m.player2, "Invalid winner");
+
+        m.winner = winner;
+        m.completed = true;
+        emit MatchCompleted(tournamentId, matchId, winner);
+
+        // Check if all matches in current round are done
+        uint256 round = m.round;
+        if (_roundCompleted(tournamentId, round)) {
+            _advanceRound(tournamentId, round);
         }
     }
 
-    function completeBracket(uint256 tournamentId, uint256 bracketId, address winner) external onlyOwner {
-        require(bracketId < brackets[tournamentId].length, "Invalid bracket");
-        require(
-            winner == brackets[tournamentId][bracketId].player1 || winner == brackets[tournamentId][bracketId].player2,
-            "Invalid winner"
-        );
+    function _roundCompleted(uint256 tournamentId, uint256 round) internal view returns (bool) {
+        uint256 total;
+        uint256 done;
+        for (uint256 i = 0; i < matches[tournamentId].length; i++) {
+            if (matches[tournamentId][i].round == round) {
+                total++;
+                if (matches[tournamentId][i].completed) {
+                    done++;
+                }
+            }
+        }
+        return total > 0 && done == total;
+    }
 
-        brackets[tournamentId][bracketId].winner = winner;
-        brackets[tournamentId][bracketId].completed = true;
+    function _advanceRound(uint256 tournamentId, uint256 round) internal {
+        Tournament storage tournament = tournaments[tournamentId];
+        address[] memory winners = _collectRoundWinners(tournamentId, round);
+
+        if (winners.length == 1) {
+            tournament.status = TournamentStatus.Completed;
+            tournament.winner = winners[0];
+            emit TournamentCompleted(tournamentId, winners[0]);
+            return;
+        }
+
+        uint256 nextRound = round + 1;
+        _createRoundMatches(tournamentId, winners, nextRound);
+        currentRound[tournamentId] = nextRound;
+        emit RoundAdvanced(tournamentId, nextRound);
+    }
+
+    function _collectRoundWinners(uint256 tournamentId, uint256 round) internal view returns (address[] memory) {
+        // Count winners first
+        uint256 count;
+        for (uint256 i = 0; i < matches[tournamentId].length; i++) {
+            if (matches[tournamentId][i].round == round) {
+                count++;
+            }
+        }
+
+        address[] memory winners = new address[](count);
+        uint256 idx;
+        for (uint256 i = 0; i < matches[tournamentId].length; i++) {
+            Match memory m = matches[tournamentId][i];
+            if (m.round == round) {
+                // If unmatched bye, winner may be preset to player1
+                address w = m.winner == address(0) && m.player2 == address(0) ? m.player1 : m.winner;
+                winners[idx++] = w;
+            }
+        }
+        return winners;
+    }
+
+    function _createRoundMatches(uint256 tournamentId, address[] memory entrants, uint256 round) internal {
+        for (uint256 i = 0; i < entrants.length; i += 2) {
+            address p1 = entrants[i];
+            address p2 = i + 1 < entrants.length ? entrants[i + 1] : address(0);
+
+            Match memory m = Match({
+                player1: p1,
+                player2: p2,
+                winner: p2 == address(0) ? p1 : address(0), // auto-advance on bye
+                round: round,
+                completed: p2 == address(0)
+            });
+
+            matches[tournamentId].push(m);
+            emit MatchCreated(tournamentId, matches[tournamentId].length - 1, round, p1, p2);
+        }
     }
 
     function completeTournament(uint256 tournamentId, address winner) external onlyOwner {
@@ -139,7 +209,12 @@ contract ComCeloTournaments is Ownable, Pausable {
         return participants[tournamentId];
     }
 
-    function getBrackets(uint256 tournamentId) external view returns (TournamentBracket[] memory) {
-        return brackets[tournamentId];
+    function getMatches(uint256 tournamentId) external view returns (Match[] memory) {
+        return matches[tournamentId];
+    }
+
+    // Backwards compatibility alias
+    function getBrackets(uint256 tournamentId) external view returns (Match[] memory) {
+        return matches[tournamentId];
     }
 }
