@@ -30,22 +30,23 @@ declare namespace __next_route_internal_types__ {
 
   type StaticRoutes = 
     | `/`
+    | `/api/frames/start`
     | `/api/actions/attack`
     | `/api/actions/endturn`
     | `/api/actions/move`
     | `/api/games`
-    | `/api/frames/start`
     | `/api/health`
     | `/api/leaderboard`
     | `/api/match-history`
     | `/api/profile`
+    | `/api/tournaments`
     | `/api/shop`
     | `/api/state`
-    | `/api/tournaments`
+    | `/shop`
+    | `/invites`
     | `/leaderboard`
     | `/match-history`
     | `/profile`
-    | `/shop`
     | `/tournaments`
   type DynamicRoutes<T extends string = string> = 
     | `/api/games/${SafeSlug<T>}`
