@@ -74,7 +74,8 @@ export async function getNetworkInfo(network = DEFAULT_NETWORK) {
   try {
     const provider = getProvider(network);
     const blockNumber = await provider.getBlockNumber();
-    const gasPrice = await provider.getGasPrice();
+    const feeData = await provider.getFeeData();
+    const gasPrice = feeData.gasPrice || 0n;
     
     return {
       chainId: network.chainId,
@@ -100,9 +101,9 @@ export function verifySignature(message: string, signature: string, address: str
 }
 
 // Sign message
-export function signMessage(message: string, privateKey: string): string {
+export async function signMessage(message: string, privateKey: string): Promise<string> {
   const wallet = new ethers.Wallet(privateKey);
-  return wallet.signMessage(message);
+  return await wallet.signMessage(message);
 }
 
 // Create transaction data

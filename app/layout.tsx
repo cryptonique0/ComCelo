@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "ComCelo ⚔️ Tactical Combat Arena",
@@ -10,6 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-slate-950 text-slate-50">
+        <Providers>
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-6 py-4">
@@ -35,9 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         
-        <div className="min-h-screen max-w-7xl mx-auto px-6 pt-24">
-          {children}
-        </div>
+          <div className="min-h-screen max-w-7xl mx-auto px-6 pt-24">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import TutorialModal from './components/TutorialModal';
-import { useAccount, useBalance, useNetwork } from 'wagmi';
+import { useAccount, useBalance, useChainId } from 'wagmi';
 import { useMetaTxRelay } from '@/lib/hooks/useMetaTxRelay';
 
 const characters = [
@@ -103,9 +103,9 @@ export default function HomePage() {
   const [trackInput, setTrackInput] = useState('');
 
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const { data: balance } = useBalance({ address, enabled: !!address });
-  const { executeMetaTx, waitForReceipt } = useMetaTxRelay();
+  const chainId = useChainId();
+  const { data: balance } = useBalance({ address });
+  const { waitForReceipt } = useMetaTxRelay();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -135,9 +135,12 @@ export default function HomePage() {
   }, []);
 
   const networkLabel = useMemo(() => {
-    if (!chain) return 'Base Mainnet';
-    return `${chain.name}${chain.testnet ? ' (Testnet)' : ''}`;
-  }, [chain]);
+    if (!chainId) return 'Base Mainnet';
+    // 8453 is Base mainnet, 84532 is Base testnet
+    if (chainId === 8453) return 'Base Mainnet';
+    if (chainId === 84532) return 'Base Sepolia';
+    return `Chain ${chainId}`;
+  }, [chainId]);
 
   const walletLabel = useMemo(() => {
     if (!address) return 'Not connected';
@@ -154,9 +157,9 @@ export default function HomePage() {
       setLastBlock(receipt.blockNumber);
       setLogs((l) => [`✅ Confirmed in block ${receipt.blockNumber}`, ...l].slice(0, 8));
       setTimeout(() => setOnchainStatus('idle'), 2000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setOnchainStatus('idle');
-      setLogs((l) => [`❌ ${err?.message || 'Receipt error'}`, ...l].slice(0, 8));
+      setLogs((l) => [`❌ ${(err instanceof Error ? err.message : 'Receipt error')}`, ...l].slice(0, 8));
     }
   };
 
@@ -466,7 +469,7 @@ export default function HomePage() {
                   <div>
                     <p className="text-white font-semibold text-sm">{walletLabel}</p>
                     <p className="text-emerald-300 text-xs">{isConnected ? `Connected · ${networkLabel}` : 'Not connected'}</p>
-                    <p className="text-slate-400 text-[11px]">{balance ? `${Number(balance.formatted).toFixed(4)} ${balance.symbol}` : isConnected ? 'Fetching balance...' : '—'}</p>
+                    <p className="text-slate-400 text-[11px]">{balance ? `${(Number(balance.value) / 10 ** balance.decimals).toFixed(4)} ${balance.symbol}` : isConnected ? 'Fetching balance...' : '—'}</p>
                   </div>
                   <button
                     onClick={requestSignature}

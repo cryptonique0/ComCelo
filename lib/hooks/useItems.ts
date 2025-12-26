@@ -53,16 +53,16 @@ export function useItems() {
         id: itemId,
         name: item.name,
         description: item.description,
-        itemType: item.itemType,
-        rarity: item.rarity,
+        itemType: Number(item.itemType),
+        rarity: Number(item.rarity),
         price: item.price,
         maxSupply: item.maxSupply,
         currentSupply: item.currentSupply,
-        seasonId: item.seasonId,
+        seasonId: Number(item.seasonId),
         active: item.active,
-        attackBonus: item.attackBonus,
-        defenseBonus: item.defenseBonus,
-        effectId: item.effectId,
+        attackBonus: Number(item.attackBonus),
+        defenseBonus: Number(item.defenseBonus),
+        effectId: Number(item.effectId),
       };
     } catch (err) {
       setError(err as Error);
@@ -123,7 +123,7 @@ export function useItems() {
   };
 
   // List item on marketplace
-  const listItem = async (itemId: number, price: bigint) => {
+  const listItem = async (itemId: number, amount: number, pricePerUnit: bigint) => {
     if (!walletClient || !address) {
       throw new Error('Wallet not connected');
     }
@@ -135,7 +135,7 @@ export function useItems() {
         walletClient as any
       );
 
-      const tx = await contract.listItem(itemId, price);
+      const tx = await contract.listItem(itemId, amount, pricePerUnit);
       await tx.wait();
       return tx;
     } catch (err) {
@@ -154,20 +154,8 @@ export function useItems() {
 
     try {
       setLoading(true);
-      const contract = ComCeloItems__factory.connect(
-        CONTRACTS.items,
-        walletClient as any
-      );
-
-      // Get listing price
-      const listing = await contract.marketplaceListings(listingId);
-      
-      const tx = await contract.buyFromMarketplace(listingId, {
-        value: listing.price,
-      });
-
-      await tx.wait();
-      return tx;
+      // TODO: Implement with actual contract method
+      throw new Error('Not yet implemented');
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -205,19 +193,8 @@ export function useItems() {
     if (!publicClient) return null;
     
     try {
-      const contract = ComCeloItems__factory.connect(
-        CONTRACTS.items,
-        publicClient as any
-      );
-      
-      const listing = await contract.marketplaceListings(listingId);
-      
-      return {
-        seller: listing.seller,
-        itemId: listing.itemId,
-        price: listing.price,
-        active: listing.active,
-      };
+      // TODO: Implement with actual contract method
+      throw new Error('Not yet implemented');
     } catch (err) {
       setError(err as Error);
       return null;

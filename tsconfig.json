@@ -3,6 +3,10 @@
     "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
@@ -33,11 +37,14 @@
     "contracts",
     "types",
     "app",
+    "lib",
     "pages",
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "scripts",
+    "test"
   ]
 }

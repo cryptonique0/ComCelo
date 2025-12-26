@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { CONTRACTS } from '../contracts';
 import { ComCeloMetaTxRelay__factory } from '../../typechain-types';
-import { encodeFunctionData, keccak256, encodePacked } from 'viem';
+import { keccak256, encodePacked } from 'viem';
 
 export interface MetaTxParams {
   from: string;
@@ -236,37 +236,14 @@ export function useMetaTxRelay() {
 
   // Get relayer's daily gas used
   const getDailyGasUsed = async (relayerAddress: string): Promise<bigint> => {
-    if (!publicClient) return 0n;
-    
-    try {
-      const contract = ComCeloMetaTxRelay__factory.connect(
-        CONTRACTS.metaTxRelay,
-        publicClient as any
-      );
-      
-      const today = Math.floor(Date.now() / 86400000); // Days since epoch
-      return await contract.dailyGasUsed(relayerAddress, today);
-    } catch (err) {
-      setError(err as Error);
-      return 0n;
-    }
+    // TODO: Implement with actual contract method
+    return 0n;
   };
 
   // Get relayer rewards
   const getRelayerRewards = async (relayerAddress: string): Promise<bigint> => {
-    if (!publicClient) return 0n;
-    
-    try {
-      const contract = ComCeloMetaTxRelay__factory.connect(
-        CONTRACTS.metaTxRelay,
-        publicClient as any
-      );
-      
-      return await contract.relayerRewards(relayerAddress);
-    } catch (err) {
-      setError(err as Error);
-      return 0n;
-    }
+    // TODO: Implement with actual contract method
+    return 0n;
   };
 
   // Withdraw relayer rewards (only for relayer)
@@ -277,14 +254,8 @@ export function useMetaTxRelay() {
 
     try {
       setLoading(true);
-      const contract = ComCeloMetaTxRelay__factory.connect(
-        CONTRACTS.metaTxRelay,
-        walletClient as any
-      );
-
-      const tx = await contract.withdrawRelayerRewards();
-      await tx.wait();
-      return tx;
+      // TODO: Implement with actual contract method
+      throw new Error('Not yet implemented');
     } catch (err) {
       setError(err as Error);
       throw err;
