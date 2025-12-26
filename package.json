@@ -11,7 +11,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "dev": "next dev",
     "next:build": "next build",
-    "next:start": "next start"
+    "next:start": "next start",
+    "test:watch": "hardhat test --watch"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.5",
