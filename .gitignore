@@ -6,3 +6,4 @@ dist
 coverage
 .typechain
 typechain-types
+.next/

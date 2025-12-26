@@ -12,6 +12,7 @@
     "dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
+    "ci:build": "next build --no-lint",
     "test:watch": "hardhat test --watch",
     "clean": "rm -rf .next dist cache artifacts"
   },
