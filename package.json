@@ -12,7 +12,8 @@
     "dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
-    "test:watch": "hardhat test --watch"
+    "test:watch": "hardhat test --watch",
+    "clean": "rm -rf .next dist cache artifacts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.5",
