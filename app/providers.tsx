@@ -3,7 +3,7 @@
 import { WagmiProvider } from 'wagmi';
 import { http, createConfig } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
-import { injected, coinbaseWallet, walletConnect } from 'wagmi/connectors';
+import { injected, coinbaseWallet } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
 
@@ -17,16 +17,6 @@ const config = createConfig({
   connectors: [
     injected({ shimDisconnect: true }),
     coinbaseWallet({ appName: 'ComCelo', preference: 'smartWalletOnly' }),
-    walletConnect({
-      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID ?? 'demo-project-id',
-      metadata: {
-        name: 'ComCelo',
-        description: 'Tactical 1v1 duels on Base',
-        url: 'https://comcelo.xyz',
-        icons: ['https://comcelo.xyz/icon.png'],
-      },
-      showQrModal: true,
-    }),
   ],
 });
 

@@ -30,24 +30,41 @@ declare namespace __next_route_internal_types__ {
 
   type StaticRoutes = 
     | `/`
-    | `/api/actions/attack`
     | `/api/actions/endturn`
     | `/api/actions/move`
+    | `/api/actions/attack`
+    | `/api/frame/connect`
+    | `/api/frame/join`
+    | `/api/frame/create`
+    | `/api/frame/spectate`
     | `/api/frames/start`
-    | `/api/games`
     | `/api/health`
+    | `/api/games`
     | `/api/leaderboard`
     | `/api/match-history`
     | `/api/profile`
     | `/api/shop`
     | `/api/state`
     | `/api/tournaments`
+    | `/about`
+    | `/dashboard`
+    | `/frame`
+    | `/custom-game`
+    | `/game`
     | `/invites`
     | `/leaderboard`
     | `/match-history`
+    | `/matchmaking`
+    | `/messaging`
+    | `/news`
+    | `/notifications`
+    | `/post-game`
     | `/profile`
+    | `/rules`
     | `/shop`
     | `/tournaments`
+    | `/tutorial`
+    | `/wallet`
   type DynamicRoutes<T extends string = string> = 
     | `/api/games/${SafeSlug<T>}`
     | `/api/players/${SafeSlug<T>}`
