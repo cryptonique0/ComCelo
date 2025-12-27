@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import TutorialModal from './components/TutorialModal';
-import { useAccount, useBalance, useChainId } from 'wagmi';
-import { useMetaTxRelay } from '@/lib/hooks/useMetaTxRelay';
-import StacksWalletButton from './StacksWalletButton';
+import ModernLanding from './components/ModernLanding';
+
+export default function Home() {
+  return <ModernLanding />;
+}
 
 const characters = [
   {
