@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import TutorialModal from './components/TutorialModal';
 import { useAccount, useBalance, useChainId } from 'wagmi';
 import { useMetaTxRelay } from '@/lib/hooks/useMetaTxRelay';
+import StacksWalletButton from './StacksWalletButton';
 
 const characters = [
   {
@@ -230,7 +231,7 @@ export default function HomePage() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-cyan-500/40 bg-white/5 backdrop-blur-lg shadow-lg shadow-cyan-500/20">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-sm font-semibold text-cyan-200">LIVE ON BASE MAINNET · GASLESS ENABLED</span>
+              <span className="text-sm font-semibold text-cyan-200">LIVE ON BASE + STACKS · GASLESS ENABLED</span>
             </div>
 
             <div className="space-y-3">
@@ -259,6 +260,16 @@ export default function HomePage() {
               <button className="px-7 py-4 rounded-2xl bg-slate-800/60 border border-slate-700 text-slate-200 font-semibold hover:border-cyan-400/50 hover:bg-slate-800 transition">
                 🧭 Roadmap
               </button>
+            </div>
+
+            {/* Wallet Connection Section */}
+            <div className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-700/70">
+              <div className="flex-1 min-w-[200px]">
+                <p className="text-xs text-slate-400 uppercase tracking-wider mb-2">Connect Wallets</p>
+                <div className="flex flex-wrap gap-3">
+                  <StacksWalletButton />
+                </div>
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4 text-sm">
