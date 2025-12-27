@@ -164,10 +164,10 @@ export default function Dashboard() {
                       </div>
                       <span className="text-[#9db9ab] text-xs">24m remaining</span>
                     </div>
-                    <button className="w-full md:w-auto h-10 px-6 rounded-lg bg-primary hover:bg-[#10c96d] text-[#111814] font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2">
+                    <a href="/game" className="w-full md:w-auto h-10 px-6 rounded-lg bg-primary hover:bg-[#10c96d] text-[#111814] font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2">
                       ENTER FRAME
                       <span className="material-symbols-outlined text-sm">login</span>
-                    </button>
+                    </a>
                   </div>
 
                   {/* Active Game Item: Opponent Turn */}
