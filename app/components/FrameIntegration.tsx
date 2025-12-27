@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useRouter } from 'next/navigation';
 
 export default function FrameIntegration() {
+  const router = useRouter();
   const { address, isConnected } = useAccount();
   const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const [status, setStatus] = useState<string | null>(null);
+  const [opponent, setOpponent] = useState<string>('');
 
   const callAction = async (path: string, body?: Record<string, unknown>) => {
     try {
@@ -25,8 +28,8 @@ export default function FrameIntegration() {
         return;
       }
 
-      // If action is 'join', trigger contract write
-      if (json.action === 'join' && json.contractAddress && address) {
+      // If action is 'join' or 'create', trigger contract write
+      if ((json.action === 'join' || json.action === 'create') && json.contractAddress && address) {
         setStatus('preparing transaction…');
         try {
           writeContract({
@@ -35,12 +38,14 @@ export default function FrameIntegration() {
             functionName: json.functionName,
             args: json.args,
           });
-          setStatus(`tx sent • gameId=${json.args?.[0]?.toString() ?? 'n/a'}`);
+          const gameIdDisplay = json.action === 'create' ? 'creating…' : `gameId=${json.args?.[0]?.toString() ?? 'n/a'}`;
+          setStatus(`tx sent • ${gameIdDisplay}`);
         } catch (e: any) {
           setStatus(`tx error: ${e?.message ?? 'unknown'}`);
         }
       } else if (json.action === 'spectate' && json.redirect) {
-        setStatus(`spectate • redirect: ${json.redirect}`);
+        setStatus(`spectating gameId=${json.gameId}…`);
+        setTimeout(() => router.push(json.redirect), 500);
       } else {
         setStatus(`${json.action} • ${JSON.stringify(json)}`);
       }
@@ -171,6 +176,40 @@ export default function FrameIntegration() {
           </div>
         </div>
       )}
+
+      {/* Create Challenge Section */}
+      <section className="py-12 px-4 bg-[#151a24] border-y border-[#282e39]">
+        <div className="max-w-7xl mx-auto">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-3">Cast a Challenge</h2>
+              <p className="text-slate-400">Create a new game and invite an opponent by their wallet address.</p>
+            </div>
+            <div className="bg-[#1c1f27] rounded-xl border border-[#282e39] p-6 md:p-8">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="text-sm font-bold text-white mb-2 block">Opponent Address</label>
+                  <input
+                    type="text"
+                    value={opponent}
+                    onChange={(e) => setOpponent(e.target.value)}
+                    placeholder="0x..."
+                    className="w-full h-12 px-4 bg-[#101622] border border-[#282e39] rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#135bec] font-mono text-sm"
+                  />
+                </div>
+                <button
+                  onClick={() => callAction('/api/frame/create', { opponent, ranked: true, maxTurns: 50, stake: '0' })}
+                  disabled={!isConnected || !opponent || isPending || isConfirming}
+                  className="w-full flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#135bec] text-white font-bold text-base shadow-lg shadow-[#135bec]/25 hover:bg-[#135bec]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="material-symbols-outlined">add_circle</span>
+                  <span>{isPending || isConfirming ? 'Creating Game…' : isConnected ? 'Create Game' : 'Connect Wallet First'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Steps */}
       <section className="py-20 px-4 bg-[#151a24]">
