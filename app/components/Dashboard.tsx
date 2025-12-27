@@ -27,6 +27,10 @@ export default function Dashboard() {
                 <span className="material-symbols-outlined">target</span>
                 <span className="text-sm font-medium">Missions</span>
               </a>
+               <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/rules">
+                 <span className="material-symbols-outlined">menu_book</span>
+                 <span className="text-sm font-medium">Rules & Units</span>
+               </a>
               <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/matchmaking">
                 <span className="material-symbols-outlined">swords</span>
                 <span className="text-sm font-medium">Armory</span>
