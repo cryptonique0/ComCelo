@@ -25,8 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               
               <div className="hidden md:flex items-center gap-6">
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Arena</a>
-                <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Units</a>
-                <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Leaderboard</a>
+                <a href="/custom-game" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Custom Game</a>
+                <a href="/notifications" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Notifications</a>
+                <a href="/messaging" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Comms</a>
                 <a href="/about" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">About</a>
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Docs</a>
                 <a href="/profile#support" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Support</a>
