@@ -19,23 +19,23 @@ export default function Dashboard() {
               <p className="text-[#9db9ab] text-xs font-normal uppercase tracking-widest pl-1">Tactical Strategy</p>
             </div>
             <nav className="flex flex-col gap-2">
-              <a className="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#283930] text-white border-l-2 border-primary group transition-all" href="#">
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#283930] text-white border-l-2 border-primary group transition-all" href="/dashboard">
                 <span className="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
                 <span className="text-sm font-medium">Dashboard</span>
               </a>
-              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/game">
                 <span className="material-symbols-outlined">target</span>
                 <span className="text-sm font-medium">Missions</span>
               </a>
-              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/matchmaking">
                 <span className="material-symbols-outlined">swords</span>
                 <span className="text-sm font-medium">Armory</span>
               </a>
-              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/tournaments">
                 <span className="material-symbols-outlined">leaderboard</span>
                 <span className="text-sm font-medium">Leaderboard</span>
               </a>
-              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/profile">
                 <span className="material-symbols-outlined">settings</span>
                 <span className="text-sm font-medium">Settings</span>
               </a>
@@ -332,24 +332,24 @@ export default function Dashboard() {
 
       {/* Mobile Bottom Nav (Visible only on small screens) */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#111814] border-t border-[#283930] flex justify-around p-4 z-50">
-        <a className="flex flex-col items-center gap-1 text-primary" href="#">
+        <a className="flex flex-col items-center gap-1 text-primary" href="/dashboard">
           <span className="material-symbols-outlined">dashboard</span>
           <span className="text-[10px]">Home</span>
         </a>
-        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/game">
           <span className="material-symbols-outlined">target</span>
           <span className="text-[10px]">Missions</span>
         </a>
         <div className="relative -top-8">
-          <button className="bg-primary text-[#111814] p-4 rounded-full shadow-[0_0_15px_rgba(19,236,128,0.4)] border-4 border-[#111814]">
+          <a href="/matchmaking" className="bg-primary text-[#111814] p-4 rounded-full shadow-[0_0_15px_rgba(19,236,128,0.4)] border-4 border-[#111814] flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl font-bold">add</span>
-          </button>
+          </a>
         </div>
-        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
-          <span className="material-symbols-outlined">swords</span>
-          <span className="text-[10px]">Armory</span>
+        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/tournaments">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="text-[10px]">Leaderboard</span>
         </a>
-        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/profile">
           <span className="material-symbols-outlined">settings</span>
           <span className="text-[10px]">Settings</span>
         </a>
