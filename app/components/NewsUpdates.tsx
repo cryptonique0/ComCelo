@@ -1,6 +1,67 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const TAGS = ['All Updates', 'Patch Notes', 'Announcements', 'Events', 'Community'] as const;
+type Tag = typeof TAGS[number];
+
 export default function NewsUpdates() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const [search, setSearch] = useState('');
+  const [tag, setTag] = useState<Tag>('All Updates');
+
+  useEffect(() => {
+    const q = params.get('q') ?? (typeof window !== 'undefined' ? localStorage.getItem('news:q') ?? '' : '');
+    const t = (params.get('tag') as Tag | null) ?? (typeof window !== 'undefined' ? (localStorage.getItem('news:tag') as Tag | null) : null);
+    if (q) setSearch(q);
+    if (t && TAGS.includes(t)) setTag(t);
+  }, [params]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('news:q', search);
+    localStorage.setItem('news:tag', tag);
+    const usp = new URLSearchParams(params.toString());
+    search ? usp.set('q', search) : usp.delete('q');
+    tag && tag !== 'All Updates' ? usp.set('tag', tag) : usp.delete('tag');
+    router.replace(`/news?${usp.toString()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, tag]);
+
+  const hero = {
+    title: 'Season 4: Tactical Dawn is Live',
+    summary: "The wait is over. Dive into the biggest update of the year featuring the new 'Cyber Ruins' map, 3 new tactical units, and a complete overhaul of the ranked matchmaking system.",
+    tag: 'Major Update',
+    date: 'Oct 24, 2024',
+  };
+
+  const cards = [
+    { tag: 'Announcements', title: 'Server Maintenance Complete', time: '2h ago', desc: 'Servers are back online following scheduled database optimization. Ranked queues are now open with improved stability.' },
+    { tag: 'Events', title: 'Grand Prix: Finals Results', time: '1d ago', desc: 'Congratulations to @CipherOne for taking the crown in the Season 3 Finale! View the full tournament bracket and replay highlights.' },
+    { tag: 'Patch Notes', title: 'Hotfix 4.0.2 Deployed', time: '3d ago', desc: "Fixed an issue where Heavy Infantry units would get stuck on the 'Factory' map tiles. Adjusted turn timer for Blitz mode." },
+  ];
+
+  const previous = [
+    { date: 'Oct 18, 2024', tag: 'Community', title: 'Community Spotlight: Strategy Guide by @TacMaster', summary: 'Check out this in-depth guide on mastering the Recon unit class and controlling the high ground.' },
+    { date: 'Oct 15, 2024', tag: 'Dev Log', title: 'Dev Diary #42: The Future of Base Gaming', summary: 'Our lead developer shares insights on upcoming blockchain features, gas-free transactions, and mobile support.' },
+    { date: 'Oct 10, 2024', tag: 'Events', title: 'Mid-Season Brawl: Registration Open', summary: 'Sign ups are now open for the mid-season brawl. Entry fee is 0.01 ETH, winner takes 3 ETH prize pool.' },
+  ];
+
+  const filterBy = (items: Array<Record<string, string>>) => {
+    const q = search.toLowerCase();
+    return items.filter((it) => {
+      const text = Object.values(it).join(' ').toLowerCase();
+      const matchesQ = q ? text.includes(q) : true;
+      const matchesTag = tag === 'All Updates' ? true : (it.tag?.toLowerCase() === tag.toLowerCase());
+      return matchesQ && matchesTag;
+    });
+  };
+
+  const filteredCards = useMemo(() => filterBy(cards), [cards, search, tag]);
+  const filteredPrev = useMemo(() => filterBy(previous), [previous, search, tag]);
+
   return (
     <div className="bg-background-dark min-h-screen flex flex-col text-white">
       <header className="sticky top-0 z-50 w-full border-b border-[#283930] bg-background-dark/95 backdrop-blur-sm px-4 lg:px-10 py-3">
@@ -75,14 +136,14 @@ export default function NewsUpdates() {
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto pb-3">
                 <div className="relative w-full sm:w-64">
-                  <input className="w-full h-10 pl-10 pr-4 bg-surface-dark border border-[#283930] rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-primary text-sm" placeholder="Search updates..." type="text" />
+                  <input value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-10 pl-10 pr-4 bg-surface-dark border border-[#283930] rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-primary text-sm" placeholder="Search updates..." type="text" />
                   <span className="material-symbols-outlined absolute left-3 top-2.5 text-white/40 text-[20px]">search</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {['All Updates', 'Patch Notes', 'Announcements', 'Events', 'Community'].map((tag, i) => (
-                <button key={i} className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase whitespace-nowrap ${i === 0 ? 'bg-primary text-[#102219]' : 'bg-surface-dark border border-[#283930] text-white/70 hover:text-white hover:border-primary/50'}`}>{tag}</button>
+              {TAGS.map((t) => (
+                <button key={t} onClick={() => setTag(t)} className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase whitespace-nowrap ${tag === t ? 'bg-primary text-[#102219]' : 'bg-surface-dark border border-[#283930] text-white/70 hover:text-white hover:border-primary/50'}`}>{t}</button>
               ))}
             </div>
           </section>
@@ -109,14 +170,10 @@ export default function NewsUpdates() {
               </div>
             </div>
 
-            {[
-              { iconColor: 'text-blue-400', iconBg: 'bg-blue-500/10', title: 'Server Maintenance Complete', time: '2h ago', desc: 'Servers are back online following scheduled database optimization. Ranked queues are now open with improved stability.' },
-              { iconColor: 'text-purple-400', iconBg: 'bg-purple-500/10', title: 'Grand Prix: Finals Results', time: '1d ago', desc: 'Congratulations to @CipherOne for taking the crown in the Season 3 Finale! View the full tournament bracket and replay highlights.' },
-              { iconColor: 'text-orange-400', iconBg: 'bg-orange-500/10', title: 'Hotfix 4.0.2 Deployed', time: '3d ago', desc: "Fixed an issue where Heavy Infantry units would get stuck on the 'Factory' map tiles. Adjusted turn timer for Blitz mode." },
-            ].map((card, i) => (
+            {filteredCards.map((card, i) => (
               <div key={i} className="flex flex-col bg-surface-dark rounded-xl border border-[#283930] p-6 hover:border-primary/40 hover:-translate-y-0.5 transition-all group">
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`w-10 h-10 rounded-lg ${card.iconBg} border border-white/10 flex items-center justify-center ${card.iconColor}`}>
+                  <div className={`w-10 h-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white/70`}>
                     <span className="material-symbols-outlined">campaign</span>
                   </div>
                   <span className="text-white/40 text-xs font-mono">{card.time}</span>
@@ -145,11 +202,7 @@ export default function NewsUpdates() {
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              {[
-                { date: 'Oct 18, 2024', tag: 'Community', title: 'Community Spotlight: Strategy Guide by @TacMaster', summary: 'Check out this in-depth guide on mastering the Recon unit class and controlling the high ground.' },
-                { date: 'Oct 15, 2024', tag: 'Dev Log', title: 'Dev Diary #42: The Future of Base Gaming', summary: 'Our lead developer shares insights on upcoming blockchain features, gas-free transactions, and mobile support.' },
-                { date: 'Oct 10, 2024', tag: 'Event', title: 'Mid-Season Brawl: Registration Open', summary: 'Sign ups are now open for the mid-season brawl. Entry fee is 0.01 ETH, winner takes 3 ETH prize pool.' },
-              ].map((item, i) => (
+              {filteredPrev.map((item, i) => (
                 <a key={i} className="group flex flex-col md:flex-row md:items-center gap-4 p-4 rounded-xl bg-surface-dark/50 border border-[#283930] hover:bg-surface-dark hover:border-primary/30 transition-all" href="#">
                   <div className="md:w-32 flex-shrink-0">
                     <span className="text-white/40 text-xs font-mono group-hover:text-primary transition-colors">{item.date}</span>

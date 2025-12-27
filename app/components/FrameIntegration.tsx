@@ -1,6 +1,30 @@
 'use client';
 
+import { useState } from 'react';
+
 export default function FrameIntegration() {
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const callAction = async (path: string, body?: Record<string, unknown>) => {
+    try {
+      setLoading(true);
+      setStatus(null);
+      const res = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body ?? {}),
+      });
+      const json = await res.json();
+      if (json?.ok) setStatus(`${json.action} • lobby=${json.lobbyId ?? 'n/a'}`);
+      else setStatus(`error: ${json?.error ?? res.status}`);
+    } catch (e) {
+      setStatus('network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-background-dark text-white min-h-screen">
       {/* TopNavBar */}
@@ -48,7 +72,7 @@ export default function FrameIntegration() {
               Experience ComCelo's 1v1 tactical battles without ever leaving Farcaster. Deploy units, command turns, and claim victory directly from your social feed using next-gen Frames.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#135bec] text-white font-bold text-base shadow-lg shadow-[#135bec]/25 hover:bg-[#135bec]/90 hover:scale-[1.02] transition-all">
+              <button onClick={() => callAction('/api/frame/connect')} className="flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#135bec] text-white font-bold text-base shadow-lg shadow-[#135bec]/25 hover:bg-[#135bec]/90 hover:scale-[1.02] transition-all">
                 <span className="material-symbols-outlined">login</span>
                 <span>Connect Farcaster</span>
               </button>
@@ -92,8 +116,8 @@ export default function FrameIntegration() {
                     <h3 className="text-white font-bold mb-1">Ranked Match: Forest Arena</h3>
                     <p className="text-slate-400 text-xs mb-3">Entry: 0.01 ETH • Reward: 0.02 ETH</p>
                     <div className="grid grid-cols-2 gap-2">
-                      <button className="bg-white text-black font-bold py-2 rounded text-sm hover:bg-gray-200 transition-colors">Join Battle</button>
-                      <button className="bg-slate-700 text-white font-bold py-2 rounded text-sm hover:bg-slate-600 transition-colors">Spectate</button>
+                      <button onClick={() => callAction('/api/frame/join', { lobbyId: 'forest' })} className="bg-white text-black font-bold py-2 rounded text-sm hover:bg-gray-200 transition-colors">Join Battle</button>
+                      <button onClick={() => callAction('/api/frame/spectate', { lobbyId: 'forest' })} className="bg-slate-700 text-white font-bold py-2 rounded text-sm hover:bg-slate-600 transition-colors">Spectate</button>
                     </div>
                   </div>
                 </div>
@@ -102,6 +126,17 @@ export default function FrameIntegration() {
           </div>
         </div>
       </section>
+      {/* Action status */}
+      {status && (
+        <div className="px-4">
+          <div className={`max-w-7xl mx-auto mb-6 p-3 rounded-lg border ${loading ? 'border-[#135bec]/40 bg-[#135bec]/10' : 'border-[#283930] bg-[#1c1f27]'}`}>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="material-symbols-outlined text-[#135bec] text-[18px]">info</span>
+              <span className="font-mono">{loading ? 'processing… ' : ''}{status}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Steps */}
       <section className="py-20 px-4 bg-[#151a24]">
