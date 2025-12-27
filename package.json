@@ -38,7 +38,7 @@
     "next": "^14.1.0",
     "porto": "^0.2.37",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.2.3",
     "viem": "^2.43.3",
     "wagmi": "^2.19.5"
   },
@@ -46,7 +46,7 @@
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.39",
-    "@types/react-dom": "^18.2.17",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "dotenv": "^16.3.1",
