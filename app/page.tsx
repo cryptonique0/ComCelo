@@ -1,7 +1,7 @@
 "use client";
 
-import ModernLanding from './components/ModernLanding';
+import Dashboard from './components/Dashboard';
 
 export default function Home() {
-  return <ModernLanding />;
+  return <Dashboard />;
 }
