@@ -92,7 +92,7 @@ export default function Dashboard() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Quick Match Card */}
-                  <div className="relative group overflow-hidden rounded-xl border border-[#283930] bg-[#1c2721] p-6 hover:border-primary/50 transition-all cursor-pointer">
+                  <a href="/matchmaking" className="relative group overflow-hidden rounded-xl border border-[#283930] bg-[#1c2721] p-6 hover:border-primary/50 transition-all cursor-pointer">
                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
                     <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDue1YS4lRHvxTjPCZoqxcfh8ZTsMNhQ0dWyXhKWsDbw6rpjIxt0IH2V5kVKTPxTOe-8RMyTB6HAVAg8n_xe9pHVwD23VSbGjplRjeuqwk_rI5IEgRkrDL2-NzxLtsic8jspQ-zWJUh2935ETrnOqQpOdBwfhBGz66asLVREMWm4V5yBR6rmwL4XUcgo-nfSUxgf5rz5UsuyzjYpQ85Ln9UQHSs-kiIcv987H_yO3oEEhGkSSf9HJ-NEokK3xvJWU1N-NU05XChlJ0')"}}></div>
                     <div className="relative z-20 flex flex-col h-full justify-between min-h-[140px]">
@@ -108,7 +108,7 @@ export default function Dashboard() {
                         <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
                       </div>
                     </div>
-                  </div>
+                  </a>
 
                   {/* Invite Friend Card */}
                   <div className="relative group overflow-hidden rounded-xl border border-[#283930] bg-[#1c2721] p-6 hover:border-white/30 transition-all cursor-pointer">
