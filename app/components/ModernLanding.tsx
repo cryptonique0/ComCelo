@@ -47,7 +47,7 @@ export default function ModernLanding() {
                 Connect
               </button>
               <button className="flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-transform hover:scale-105 hover:bg-[#34f092]">
-                Play Now
+                <a href="/dashboard">Play Now</a>
               </button>
             </div>
           </div>
@@ -81,10 +81,10 @@ export default function ModernLanding() {
                   </p>
 
                   <div className="mt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                    <button className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-base font-bold text-background-dark transition-all hover:bg-[#34f092] hover:shadow-[0_0_20px_rgba(19,236,128,0.4)]">
+                    <a href="/dashboard" className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3.5 text-base font-bold text-background-dark transition-all hover:bg-[#34f092] hover:shadow-[0_0_20px_rgba(19,236,128,0.4)]">
                       <span className="material-symbols-outlined">swords</span>
                       Start Duel
-                    </button>
+                    </a>
                     <button className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg border border-surface-border bg-surface-dark px-8 py-3.5 text-base font-bold hover:bg-surface-border transition-colors">
                       <span className="material-symbols-outlined">description</span>
                       Read Whitepaper
@@ -269,9 +269,9 @@ export default function ModernLanding() {
                 Join the first wave of tactical commanders on Base and Stacks. The grid awaits your strategy.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <button className="flex items-center justify-center rounded-lg bg-primary px-8 py-4 text-lg font-bold text-background-dark transition-transform hover:scale-105 hover:bg-[#34f092] shadow-lg shadow-primary/20">
+                <a href="/dashboard" className="flex items-center justify-center rounded-lg bg-primary px-8 py-4 text-lg font-bold text-background-dark transition-transform hover:scale-105 hover:bg-[#34f092] shadow-lg shadow-primary/20">
                   Play Now
-                </button>
+                </a>
                 <button className="flex items-center justify-center gap-2 rounded-lg border border-surface-border bg-black/40 backdrop-blur-sm px-8 py-4 text-lg font-bold transition-colors hover:bg-surface-border">
                   <span className="material-symbols-outlined">chat</span>
                   Join Community
