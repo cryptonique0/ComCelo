@@ -28,6 +28,7 @@ export default function Profile() {
               <a className="text-white/70 text-sm font-medium hover:text-white transition-colors" href="/">Play</a>
               <a className="text-white/70 text-sm font-medium hover:text-white transition-colors" href="/leaderboard">Leaderboard</a>
               <a className="text-white text-sm font-bold hover:text-primary transition-colors" href="/profile">Profile</a>
+              <a className="text-white/70 text-sm font-medium hover:text-white transition-colors" href="/profile#support">Support</a>
             </nav>
             <div className="flex items-center gap-3">
               <button className="flex items-center gap-2 h-9 px-4 rounded-lg bg-surface-dark border border-primary/30 text-white text-sm font-bold hover:bg-surface-dark/80 transition-all">
@@ -63,6 +64,10 @@ export default function Profile() {
               <a href="#achievements" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-dark text-white/70 hover:text-white font-medium text-sm whitespace-nowrap lg:whitespace-normal transition-colors">
                 <span className="material-symbols-outlined text-[20px]">emoji_events</span>
                 <span>Achievements</span>
+              </a>
+              <a href="#support" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-dark text-white/70 hover:text-white font-medium text-sm whitespace-nowrap lg:whitespace-normal transition-colors">
+                <span className="material-symbols-outlined text-[20px]">help</span>
+                <span>Help & Support</span>
               </a>
             </nav>
           </aside>
@@ -299,6 +304,49 @@ export default function Profile() {
                     <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${showPublicStats ? 'translate-x-6' : 'translate-x-0'}`}></div>
                   </button>
                 </div>
+              </div>
+            </section>
+
+            {/* Help & Support */}
+            <section id="support" className="bg-surface-dark rounded-2xl border border-accent-green p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <span className="material-symbols-outlined text-primary text-[24px]">help</span>
+                <h2 className="text-white text-lg font-bold">Help & Support</h2>
+              </div>
+              <div className="space-y-3">
+                {[{
+                  icon: 'account_balance_wallet',
+                  question: 'How do I connect my Celo wallet?',
+                  answer: 'Open Security & Wallet, choose Link Wallet, and pick Valora, MetaMask, or your preferred provider while on Celo.',
+                },{
+                  icon: 'rocket_launch',
+                  question: 'How do Farcaster Frames work here?',
+                  answer: 'When it is your turn, you get a Farcaster notification. You can view the board and submit moves directly from the frame without opening the full app.',
+                },{
+                  icon: 'token',
+                  question: 'Are in-game items tradeable?',
+                  answer: 'Yes. Units, skins, and badges are NFTs on Celo so you own and can trade them on compatible marketplaces.',
+                }].map((faq) => (
+                  <details key={faq.question} className="group bg-background-dark border border-border-green rounded-lg overflow-hidden transition-all duration-200">
+                    <summary className="flex items-center justify-between p-4 cursor-pointer text-white font-medium hover:bg-white/5 transition-colors">
+                      <span className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-white/60">{faq.icon}</span>
+                        {faq.question}
+                      </span>
+                      <span className="material-symbols-outlined text-white/50 transition-transform duration-200 group-open:rotate-180">expand_more</span>
+                    </summary>
+                    <div className="px-4 pb-4 pl-[3.25rem] text-sm text-white/60 leading-relaxed">
+                      {faq.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+              <div className="mt-6 pt-6 border-t border-border-green flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-white/60">Can’t find what you need?</p>
+                <button className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm font-medium rounded-lg transition-colors border border-border-green flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg">mail</span>
+                  Contact Support
+                </button>
               </div>
             </section>
           </div>

@@ -29,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Leaderboard</a>
                 <a href="/about" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">About</a>
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Docs</a>
+                <a href="/profile#support" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Support</a>
               </div>
               
               <button className="px-6 py-2 bg-gradient-to-r from-cyan-600 to-indigo-600 rounded-lg font-bold text-sm hover:scale-105 transition-transform">
