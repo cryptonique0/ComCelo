@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { CONTRACTS } from '../contracts';
 import { ComCeloItems__factory } from '../../typechain-types';

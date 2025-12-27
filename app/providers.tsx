@@ -41,8 +41,8 @@ function StacksWalletProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check if Hiro/Leather wallet is available
     const checkWallet = async () => {
-      if (typeof window !== 'undefined' && (window as any).StacksProvider) {
-        const provider = (window as any).StacksProvider;
+      if (typeof window !== 'undefined' && 'StacksProvider' in window) {
+        const provider = (window as unknown as { StacksProvider: { getAddresses: () => Promise<{ mainnet: string }> } }).StacksProvider;
         try {
           const userData = await provider.getAddresses();
           if (userData?.mainnet) {
@@ -60,10 +60,10 @@ function StacksWalletProvider({ children }: { children: ReactNode }) {
   const connect = async () => {
     if (typeof window === 'undefined') return;
     
-    // @ts-ignore - Hiro Wallet API
+    // @ts-expect-error - Hiro Wallet API
     if (window.StacksProvider) {
       try {
-        // @ts-ignore
+        // @ts-expect-error
         const provider = window.StacksProvider;
         const userData = await provider.getAddresses();
         if (userData?.mainnet) {
