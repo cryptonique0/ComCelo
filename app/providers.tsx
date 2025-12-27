@@ -3,6 +3,7 @@
 import { WagmiProvider } from 'wagmi';
 import { http, createConfig } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
+import { injected, coinbaseWallet } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
 
@@ -13,6 +14,10 @@ const config = createConfig({
     [base.id]: http(),
     [baseSepolia.id]: http(),
   },
+  connectors: [
+    injected({ shimDisconnect: true }),
+    coinbaseWallet({ appName: 'ComCelo', preference: 'smart' }),
+  ],
 });
 
 const queryClient = new QueryClient();
