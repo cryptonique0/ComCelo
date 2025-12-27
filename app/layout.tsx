@@ -27,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Arena</a>
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Units</a>
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Leaderboard</a>
+                <a href="/about" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">About</a>
                 <a href="#" className="text-slate-400 hover:text-cyan-400 transition-colors font-semibold">Docs</a>
               </div>
               

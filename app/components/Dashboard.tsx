@@ -39,6 +39,10 @@ export default function Dashboard() {
                 <span className="material-symbols-outlined">leaderboard</span>
                 <span className="text-sm font-medium">Leaderboard</span>
               </a>
+              <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/shop">
+                <span className="material-symbols-outlined">storefront</span>
+                <span className="text-sm font-medium">Shop</span>
+              </a>
               <a className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="/wallet">
                 <span className="material-symbols-outlined">account_balance_wallet</span>
                 <span className="text-sm font-medium">Wallet</span>
@@ -356,6 +360,10 @@ export default function Dashboard() {
         <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/tournaments">
           <span className="material-symbols-outlined">leaderboard</span>
           <span className="text-[10px]">Leaderboard</span>
+        </a>
+        <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/shop">
+          <span className="material-symbols-outlined">storefront</span>
+          <span className="text-[10px]">Shop</span>
         </a>
         <a className="flex flex-col items-center gap-1 text-[#9db9ab]" href="/wallet">
           <span className="material-symbols-outlined">account_balance_wallet</span>
