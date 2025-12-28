@@ -31,32 +31,32 @@ declare namespace __next_route_internal_types__ {
   type StaticRoutes = 
     | `/`
     | `/about`
-    | `/custom-game`
     | `/api/actions/attack`
-    | `/api/actions/endturn`
     | `/api/actions/move`
-    | `/api/frame/create`
-    | `/api/frame/connect`
-    | `/api/frame/join`
-    | `/api/frame/spectate`
-    | `/api/games`
+    | `/api/actions/endturn`
     | `/api/frames/start`
-    | `/api/health`
+    | `/api/frame/connect`
+    | `/api/frame/create`
+    | `/api/frame/spectate`
+    | `/api/frame/join`
+    | `/api/games`
     | `/api/leaderboard`
+    | `/api/health`
     | `/api/match-history`
     | `/api/profile`
-    | `/api/tournaments`
     | `/api/shop`
     | `/api/state`
-    | `/dashboard`
+    | `/api/tournaments`
+    | `/custom-game`
     | `/frame`
     | `/game`
+    | `/dashboard`
+    | `/news`
     | `/invites`
     | `/leaderboard`
     | `/match-history`
     | `/matchmaking`
     | `/messaging`
-    | `/news`
     | `/notifications`
     | `/post-game`
     | `/profile`

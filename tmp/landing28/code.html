@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ComCelo - Unit Customization</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec80",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102219",
+                        "surface-dark": "#1c2721",
+                        "surface-darker": "#111814",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #283930; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3e5246; 
+        }
+        .glass-panel {
+            background: rgba(28, 39, 33, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .unit-stat-bar {
+            background: #283930;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .unit-stat-fill {
+            height: 100%;
+            background: #13ec80;
+            transition: width 0.3s ease;
+        }
+        .unit-stat-preview {
+            height: 100%;
+            background: rgba(19, 236, 128, 0.3);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        .card-glow:hover {
+            box-shadow: 0 0 20px rgba(19, 236, 128, 0.1);
+            border-color: rgba(19, 236, 128, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="hidden md:flex flex-col w-64 h-full border-r border-[#283930] bg-[#111814]">
+<div class="flex flex-col h-full p-4 justify-between">
+<div class="flex flex-col gap-8">
+<div class="flex flex-col px-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-3xl">token</span>
+<h1 class="text-white text-xl font-bold tracking-tight">ComCelo</h1>
+</div>
+<p class="text-[#9db9ab] text-xs font-normal uppercase tracking-widest pl-1">Tactical Strategy</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">target</span>
+<span class="text-sm font-medium">Missions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-sm font-medium">Rules &amp; Units</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#283930] text-white border-l-2 border-primary group transition-all" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">manufacturing</span>
+<span class="text-sm font-medium">Customization</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2721] text-[#9db9ab] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="text-sm font-medium">Leaderboard</span>
+</a>
+</nav>
+</div>
+<div class="p-4 rounded-xl bg-gradient-to-br from-[#1c2721] to-[#111814] border border-[#283930]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-cover bg-center border border-primary/30" data-alt="User Avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJ-Yoolg08dNz1d32h5NxbOzuOLv7srIViZD45dHZVkyQFeeUp8YrdPVR0SXl7f3nUO5H2fKkEC8XJpNKWgIBBkJskutZ8lqddTo0C4UtTYLluV7znuXIIpkYXNYGPYyfxkYaDSB0Lg4bsKGZErtYBl5dwJI6gIMSgv6V144xAspezRj3ZumHP5vKQ0LE_RnxaEcxuccQblPCK00q93_CrqlFWrTWPxfksh4V2muexMHm-PR0YXpXM9HrNJagEqBl5z4zIi7VXbXY')"></div>
+<div class="flex flex-col">
+<span class="text-white text-sm font-bold">Commander</span>
+<span class="text-primary text-xs">Online</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-full overflow-hidden relative">
+<header class="flex items-center justify-between border-b border-[#283930] bg-[#111814]/90 backdrop-blur-md px-6 py-4 sticky top-0 z-20">
+<div class="md:hidden flex items-center gap-3">
+<span class="material-symbols-outlined text-white">menu</span>
+<span class="text-white font-bold text-lg">ComCelo</span>
+</div>
+<div class="hidden md:flex flex-col">
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">UNIT FACTORY</h2>
+<p class="text-[#9db9ab] text-xs font-mono">UPGRADE CENTER // MODIFY SPECS</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-2 bg-[#1c2721] rounded-lg border border-[#283930]">
+<span class="material-symbols-outlined text-yellow-400 text-sm">monetization_on</span>
+<span class="text-white font-mono font-bold text-sm">2,450 XP</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 bg-[#1c2721] rounded-lg border border-[#283930]">
+<span class="material-symbols-outlined text-primary text-sm">token</span>
+<span class="text-white font-mono font-bold text-sm">150 CELO</span>
+</div>
+<button class="flex items-center gap-2 bg-[#1c2721] hover:bg-[#283930] border border-[#283930] rounded-lg px-3 py-2 text-white transition-colors">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-sm font-mono font-medium">0x71C...9A2</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto p-4 md:p-8 bg-cover bg-center relative" data-alt="Abstract digital grid background pattern" style="background-image: linear-gradient(rgba(16, 34, 25, 0.95), rgba(16, 34, 25, 0.98)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuDn-ZxeDXKm6HnDfoeBuo9S9SQhwYy37xkFgupRXm4hbGOXi50srRv05tey_B05i4gnIYvnrvJ3c1a0SdBKEeVgiXombEEDsrxiyDEefWgJtZMMsYunepYfNG96p4EMasV9vttJz-EaPZjHzj5znr0tHfWzE0Oce4CCGlJQDRNeY_ch-fw58L5xtiAgdyD-T4BXLYxVPNoO5Tmkr5JuXEIjw5xmc_6Jdik1jI3m1ySHhti1jvuwRKaWZsXdk_skQXeprKhWW3O8tsI');">
+<div class="max-w-7xl mx-auto flex flex-col gap-6 h-full">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[#283930] pb-6">
+<div>
+<h1 class="text-3xl font-bold text-white mb-2">Unit Customization</h1>
+<p class="text-[#9db9ab] max-w-2xl">Invest resources to permanently enhance unit combat specifications. Strategic upgrades are irreversible.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+<div class="lg:col-span-4 flex flex-col gap-4">
+<h3 class="text-[#9db9ab] text-xs font-bold uppercase tracking-widest mb-2">Select Unit Class</h3>
+<button class="card-glow w-full p-4 rounded-xl bg-[#1c2721] border border-primary/50 relative overflow-hidden group text-left transition-all">
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="flex items-center gap-4 relative z-10">
+<div class="w-16 h-16 rounded-lg bg-[#111814] border border-primary/30 flex items-center justify-center overflow-hidden">
+<img alt="Hero Unit" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAh9xEflCwse9CfSiwx6zOYuWJYdrd9mg70qijC1COmIE6x0sInu8JiSJI1FdLz8MTxOYGwIGvNAmjnB7F3qIiuz-FNc6ek7vg_nFX9uatMT7fsw9Tuvp4liOgOG5kuDp3u2LgwFQKoVEgl7paQMHNMFuwDEG0XmyujFsI5gz_uBgOefaKQx_Zpb8T7zcvC18S7pw7GlNTPkMe0sJXUoe3PjEf2EcgWUBhIjGQyGASoWjsIeq1tXG7FDeiAwpzZRVhkrltTCC2adM"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white font-bold text-lg">Commander</h4>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold border border-primary/30">LVL 5</span>
+</div>
+<p class="text-[#9db9ab] text-xs">Balanced stats, Leader</p>
+<div class="flex gap-2 mt-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="w-2 h-2 rounded-full bg-red-500"></span>
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+</div>
+</div>
+<div class="text-primary">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</button>
+<button class="card-glow w-full p-4 rounded-xl bg-[#1c2721] border border-[#283930] hover:border-[#3e5246] relative overflow-hidden group text-left transition-all opacity-80 hover:opacity-100">
+<div class="flex items-center gap-4 relative z-10">
+<div class="w-16 h-16 rounded-lg bg-[#111814] border border-[#283930] flex items-center justify-center overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+<img alt="Soldier Unit" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeRaOzKrY_APo8-DZ8zId2FAzDUnQxsLJnlPP6k9-ozPZ6UOCvP9rlk2GvdiVHXwA35WQH93RgAU9_5IZbhozfmUX4BcAhYMLbCZjkIoGgM76_9R9HP7KEu1iOiT88hPbY8aswJwZwNHzC6LRhPCV0zfEeYMX6RV2EfHykp2qLij2g19NofsBYCUEWJZ24yJrp0U2x8koHf7JFrgVX4ZG1Jvhel5tt5tdQQHL0IE7kotTQI5HZt-Vi-0fjARNJSYe-YW4w9lw5L5U"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white font-bold text-lg group-hover:text-primary transition-colors">Infantry</h4>
+<span class="px-2 py-0.5 rounded bg-[#283930] text-[#9db9ab] text-[10px] font-bold border border-[#3e5246]">LVL 3</span>
+</div>
+<p class="text-[#9db9ab] text-xs">High DEF, Frontline</p>
+</div>
+</div>
+</button>
+<button class="card-glow w-full p-4 rounded-xl bg-[#1c2721] border border-[#283930] hover:border-[#3e5246] relative overflow-hidden group text-left transition-all opacity-80 hover:opacity-100">
+<div class="flex items-center gap-4 relative z-10">
+<div class="w-16 h-16 rounded-lg bg-[#111814] border border-[#283930] flex items-center justify-center overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+<img alt="Archer Unit" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUqQajQR8LZ6ztAYPd1ALVf-z_EGfXyXU7CsyJYR1dLEwkhMRpFBVptfsJx5psQ5rsv8s9KjajXaBNTQmNtz-qWb4JuE6RqpwHHLC48yZPGCVXABmUTk7WM9oEtN6v71hIZtDli6SPv1yKaByDVnhkWTDoKndJzqdPXxJcgK4MS7ZNE3YlyeKYSe7BGvMeY8552RL5P12gg621oLzufKMtQv-bCIaqe30k6UqzI0ZsICmnxaIw7yQEj9CpPhJryaZ1XU1U7TWbh78"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white font-bold text-lg group-hover:text-primary transition-colors">Ranger</h4>
+<span class="px-2 py-0.5 rounded bg-[#283930] text-[#9db9ab] text-[10px] font-bold border border-[#3e5246]">LVL 2</span>
+</div>
+<p class="text-[#9db9ab] text-xs">High ATK, Support</p>
+</div>
+</div>
+</button>
+</div>
+<div class="lg:col-span-8 flex flex-col gap-6">
+<div class="bg-[#1c2721] border border-[#283930] rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]">hardware</span>
+</div>
+<div class="flex justify-between items-center mb-8 border-b border-[#283930] pb-4">
+<div>
+<h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                                        Commander Specs
+                                        <span class="material-symbols-outlined text-primary text-xl">verified</span>
+</h2>
+<p class="text-[#9db9ab] text-sm font-mono">UNIT ID: 8821-CMD // TIER 1</p>
+</div>
+<div class="text-right">
+<div class="text-xs text-[#9db9ab] uppercase tracking-wider mb-1">Power Rating</div>
+<div class="text-2xl font-bold text-primary font-mono">485</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-[#111814] border border-[#283930] rounded-lg p-4 hover:border-green-500/30 transition-colors group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-green-500">favorite</span>
+<span class="text-white font-bold">HP (Health)</span>
+</div>
+<span class="text-xs text-green-500 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">Tier 2</span>
+</div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="text-2xl font-bold text-white">120</span>
+<span class="text-green-500 text-sm font-bold ml-1">+15</span>
+</div>
+<div class="text-[#9db9ab] text-xs">Max: 200</div>
+</div>
+<div class="unit-stat-bar bg-[#283930] mb-4">
+<div class="unit-stat-preview" style="width: 67%"></div>
+<div class="unit-stat-fill bg-green-500" style="width: 60%"></div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-3 border-t border-[#283930]">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#9db9ab] uppercase">Upgrade Cost</span>
+<div class="flex items-center gap-1 text-white font-bold text-sm">
+<span class="material-symbols-outlined text-yellow-400 text-xs">monetization_on</span> 250
+                                            </div>
+</div>
+<button class="bg-[#283930] hover:bg-green-600 text-white p-2 rounded transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="bg-[#111814] border border-[#283930] rounded-lg p-4 hover:border-red-500/30 transition-colors group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500">swords</span>
+<span class="text-white font-bold">ATK (Attack)</span>
+</div>
+<span class="text-xs text-red-500 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">Tier 3</span>
+</div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="text-2xl font-bold text-white">45</span>
+<span class="text-red-500 text-sm font-bold ml-1">+5</span>
+</div>
+<div class="text-[#9db9ab] text-xs">Max: 100</div>
+</div>
+<div class="unit-stat-bar bg-[#283930] mb-4">
+<div class="unit-stat-preview" style="width: 50%"></div>
+<div class="unit-stat-fill bg-red-500" style="width: 45%"></div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-3 border-t border-[#283930]">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#9db9ab] uppercase">Upgrade Cost</span>
+<div class="flex items-center gap-1 text-white font-bold text-sm">
+<span class="material-symbols-outlined text-yellow-400 text-xs">monetization_on</span> 400
+                                            </div>
+</div>
+<button class="bg-[#283930] hover:bg-red-600 text-white p-2 rounded transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="bg-[#111814] border border-[#283930] rounded-lg p-4 hover:border-blue-500/30 transition-colors group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-500">shield</span>
+<span class="text-white font-bold">DEF (Defense)</span>
+</div>
+<span class="text-xs text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">Tier 1</span>
+</div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="text-2xl font-bold text-white">20</span>
+<span class="text-blue-500 text-sm font-bold ml-1">+2</span>
+</div>
+<div class="text-[#9db9ab] text-xs">Max: 50</div>
+</div>
+<div class="unit-stat-bar bg-[#283930] mb-4">
+<div class="unit-stat-preview" style="width: 44%"></div>
+<div class="unit-stat-fill bg-blue-500" style="width: 40%"></div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-3 border-t border-[#283930]">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#9db9ab] uppercase">Upgrade Cost</span>
+<div class="flex items-center gap-1 text-white font-bold text-sm">
+<span class="material-symbols-outlined text-yellow-400 text-xs">monetization_on</span> 150
+                                            </div>
+</div>
+<button class="bg-[#283930] hover:bg-blue-600 text-white p-2 rounded transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="bg-[#111814] border border-[#283930] rounded-lg p-4 hover:border-yellow-500/30 transition-colors group relative">
+<div class="absolute inset-0 bg-black/60 z-10 flex items-center justify-center backdrop-blur-[1px] rounded-lg border border-[#283930]">
+<div class="text-center">
+<span class="material-symbols-outlined text-[#9db9ab] text-3xl mb-1">lock</span>
+<p class="text-white font-bold text-sm">Max Level Reached</p>
+<p class="text-[#9db9ab] text-xs">Range cannot be upgraded further</p>
+</div>
+</div>
+<div class="flex justify-between items-start mb-3 opacity-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500">radar</span>
+<span class="text-white font-bold">RNG (Range)</span>
+</div>
+<span class="text-xs text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20">MAX</span>
+</div>
+<div class="flex justify-between items-end mb-2 opacity-50">
+<div>
+<span class="text-2xl font-bold text-white">1</span>
+</div>
+<div class="text-[#9db9ab] text-xs">Max: 1</div>
+</div>
+<div class="unit-stat-bar bg-[#283930] mb-4 opacity-50">
+<div class="unit-stat-fill bg-yellow-500" style="width: 100%"></div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-3 border-t border-[#283930] opacity-50">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#9db9ab] uppercase">Upgrade Cost</span>
+<div class="flex items-center gap-1 text-white font-bold text-sm">
+<span class="material-symbols-outlined text-yellow-400 text-xs">monetization_on</span> -
+                                            </div>
+</div>
+<button class="bg-[#283930] text-white p-2 rounded cursor-not-allowed">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-8 bg-[#111814] border border-[#283930] rounded-lg p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-primary/10 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-primary">auto_fix_high</span>
+</div>
+<div>
+<h4 class="text-white font-bold">Special Ability: Rally Cry</h4>
+<p class="text-[#9db9ab] text-xs max-w-md">Passive: Increases nearby allies ATK by 10%. Upgrade available at Level 10.</p>
+</div>
+</div>
+<button class="px-6 py-2 bg-[#283930] text-[#9db9ab] text-sm font-bold rounded border border-[#3e5246] cursor-not-allowed flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+                                    Locked (Lvl 10)
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="h-20 md:h-0"></div>
+</main>
+</div>
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-[#111814] border-t border-[#283930] flex justify-around p-4 z-50">
+<a class="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+<span class="material-symbols-outlined">target</span>
+<span class="text-[10px]">Missions</span>
+</a>
+<div class="relative -top-8">
+<button class="bg-primary text-[#111814] p-4 rounded-full shadow-[0_0_15px_rgba(19,236,128,0.4)] border-4 border-[#111814]">
+<span class="material-symbols-outlined text-2xl font-bold">manufacturing</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+<span class="material-symbols-outlined">swords</span>
+<span class="text-[10px]">Rules</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#9db9ab]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Settings</span>
+</a>
+</nav>
+</div>
+</body></html>
