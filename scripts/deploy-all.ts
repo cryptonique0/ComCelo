@@ -157,6 +157,36 @@ async function main() {
     contracts.Governance = await governance.getAddress();
     console.log(`    ✓ ${contracts.Governance}\n`);
 
+    // Deploy governance votes token (ERC20Votes) and configure governance
+    console.log("🗳️  Deploying MockVotesToken (ERC20Votes) and configuring governance...");
+    const Token = await ethers.getContractFactory("MockVotesToken");
+    const token = await Token.deploy();
+    await token.waitForDeployment();
+    contracts.MockVotesToken = await token.getAddress();
+    console.log(`    ✓ Token: ${contracts.MockVotesToken}`);
+
+    // Mint and delegate some initial supply to deployer for bootstrap
+    await (await token.mint(deployer.address, ethers.parseEther("1000"))).wait();
+    await (await token.connect(deployer).delegate(deployer.address)).wait();
+    await ethers.provider.send("evm_mine", []);
+
+    // Configure governance parameters
+    await (await governance.setGovernanceToken(contracts.MockVotesToken)).wait();
+    await (await governance.setProposalThreshold(ethers.parseEther("10"))).wait();
+    await (await governance.setQuorumBps(2000)).wait(); // 20%
+    await (await governance.setVotingPeriod(3 * 24 * 60 * 60)).wait(); // 3 days
+    await (await governance.setExecutionDelay(24 * 60 * 60, 7 * 24 * 60 * 60)).wait(); // 1 day timelock, 7 days grace
+    await (await governance.setDeadlineExtension(60 * 60, 2000)).wait(); // +1h if within 20% of quorum
+    await (await governance.setMaxExecutionValue(ethers.parseEther("0"))).wait(); // default to 0 value calls
+    await (await governance.setVoter(deployer.address, true)).wait();
+
+    // Allowlist execution targets (limited set)
+    await (await governance.setTargetAllowed(contracts.Core, true)).wait();
+    await (await governance.setTargetAllowed(contracts.Treasury, true)).wait();
+    await (await governance.setTargetAllowed(contracts.Rewards, true)).wait();
+    await (await governance.setTargetAllowed(contracts.CrossChainRewards, true)).wait();
+    await (await governance.setTargetAllowed(contracts.PlayerStats, true)).wait();
+
     console.log("1️⃣5️⃣ ComCeloAntiCheat (Cheat Reporting & Review)...");
     const AntiCheat = await ethers.getContractFactory("ComCeloAntiCheat");
     const antiCheat = await AntiCheat.deploy();

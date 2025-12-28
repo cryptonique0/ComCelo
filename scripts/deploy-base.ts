@@ -90,6 +90,31 @@ async function main() {
       console.log(`   ✓ ComCeloGovernance: ${governanceAddress}\n`);
       txCount++;
 
+      // 4c. Deploy MockVotesToken and configure governance
+      console.log("4c. Deploying MockVotesToken and configuring governance...");
+      const TokenFactory = await ethers.getContractFactory("MockVotesToken");
+      const token = await TokenFactory.deploy();
+      await token.waitForDeployment();
+      const tokenAddress = await token.getAddress();
+      deploymentAddresses["MockVotesToken"] = tokenAddress;
+      console.log(`   ✓ MockVotesToken: ${tokenAddress}\n`);
+      txCount++;
+
+      await (await token.mint((await ethers.getSigners())[0].address, ethers.parseEther("1000"))).wait();
+      await (await token.delegate((await ethers.getSigners())[0].address)).wait();
+      await ethers.provider.send("evm_mine", []);
+
+      await (await governance.setGovernanceToken(tokenAddress)).wait();
+      await (await governance.setProposalThreshold(ethers.parseEther("10"))).wait();
+      await (await governance.setQuorumBps(2000)).wait();
+      await (await governance.setVotingPeriod(3 * 24 * 60 * 60)).wait();
+      await (await governance.setExecutionDelay(24 * 60 * 60, 7 * 24 * 60 * 60)).wait();
+      await (await governance.setDeadlineExtension(60 * 60, 2000)).wait();
+      await (await governance.setMaxExecutionValue(ethers.parseEther("0"))).wait();
+      await (await governance.setVoter((await ethers.getSigners())[0].address, true)).wait();
+      await (await governance.setTargetAllowed(coreAddress, true)).wait();
+      await (await governance.setTargetAllowed(treasuryAddress, true)).wait();
+
     // 5. Deploy ComCeloItems (ERC1155)
     console.log("5. Deploying ComCeloItems (ERC1155)...");
     const ItemsFactory = await ethers.getContractFactory("ComCeloItems");

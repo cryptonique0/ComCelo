@@ -6,6 +6,7 @@ import {
   ComCeloGovernance,
   ComCeloAntiCheat,
   ComCeloCrossChainRewards,
+  MockVotesToken,
 } from "../typechain-types";
 
 describe("New Feature Contracts", () => {
@@ -14,6 +15,7 @@ describe("New Feature Contracts", () => {
   let gov: ComCeloGovernance;
   let antiCheat: ComCeloAntiCheat;
   let xRewards: ComCeloCrossChainRewards;
+  let token: MockVotesToken;
   let owner: any;
   let p1: any;
   let p2: any;
@@ -21,6 +23,15 @@ describe("New Feature Contracts", () => {
 
   beforeEach(async () => {
     [owner, p1, p2, voter] = await ethers.getSigners();
+
+    const Token = await ethers.getContractFactory("MockVotesToken");
+    token = (await Token.deploy()) as MockVotesToken;
+    await token.waitForDeployment();
+    await token.mint(voter.address, ethers.parseEther("100"));
+    await token.mint(owner.address, ethers.parseEther("50"));
+    await token.connect(voter).delegate(voter.address);
+    await token.connect(owner).delegate(owner.address);
+    await ethers.provider.send("evm_mine", []);
 
     session = await (await ethers.getContractFactory("ComCeloSessionManager")).deploy();
     await session.waitForDeployment();
@@ -30,6 +41,13 @@ describe("New Feature Contracts", () => {
 
     gov = await (await ethers.getContractFactory("ComCeloGovernance")).deploy();
     await gov.waitForDeployment();
+    await gov.setGovernanceToken(await token.getAddress());
+    await gov.setProposalThreshold(ethers.parseEther("1"));
+    await gov.setQuorumBps(2000); // 20%
+    await gov.setVotingPeriod(60);
+    await gov.setExecutionDelay(0, 7 * 24 * 60 * 60);
+    await gov.setTargetAllowed(owner.address, true);
+    await gov.setVoter(voter.address, true);
 
     antiCheat = await (await ethers.getContractFactory("ComCeloAntiCheat")).deploy();
     await antiCheat.waitForDeployment();
@@ -63,13 +81,11 @@ describe("New Feature Contracts", () => {
   });
 
   it("runs a governance proposal", async () => {
-    await gov.setVoter(voter.address, true);
-    await gov.setVotingPeriod(60);
     const tx = await gov.connect(voter).propose("test", owner.address, 0, "0x");
     const receipt = await tx.wait();
     const proposalId = receipt?.logs[0]?.args?.id ?? 1;
 
-    await gov.connect(voter).vote(proposalId, true);
+    await gov.connect(voter).vote(proposalId, 1);
     await ethers.provider.send("evm_increaseTime", [120]);
     await ethers.provider.send("evm_mine", []);
     await gov.execute(proposalId);

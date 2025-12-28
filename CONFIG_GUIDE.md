@@ -49,6 +49,20 @@ npm run dev
 - `npm run interact:auto:evm` - Call EVM contracts
 - `npm run interact:auto:stacks` - Call Stacks contracts
 
+## Governance Configuration
+
+Before creating proposals on `ComCeloGovernance`:
+- Set the votes token once: `setGovernanceToken(<ERC20Votes address>)` and delegate votes on that token so `getPastVotes` is non-zero.
+- Configure safety rails: `setQuorumBps`, `setProposalThreshold`, `setExecutionDelay` (timelock + grace), `setDeadlineExtension` (extension + near-quorum bps), and optional `setMaxExecutionValue`.
+- Allow execution targets explicitly: `setTargetAllowed(<target>, true)` for each contract you want callable via governance.
+- Add voters to the allowlist with `setVoter` (owner always retains voting power).
+
+### EIP-712 Off-Chain Voting
+- Domain: `{ name: "ComCeloGovernance", version: "1", chainId, verifyingContract }`
+- Types: `Ballot(uint256 proposalId,uint8 support,uint256 nonce,uint256 deadline)`
+- Call: sign with wallet, then submit via `voteBySig(proposalId, support, nonce, deadline, v, r, s)`.
+- UI helper: use `app/components/GovernanceVoteButton.tsx` with `governanceAddress` and `proposalId` props.
+
 ## Utilities
 
 ### Transaction Tracking
