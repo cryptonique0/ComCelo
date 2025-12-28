@@ -42,8 +42,13 @@ npm run format
 ```bash
 npm run dev
 ```
+The app will be available at `http://localhost:3000` (if 3000 is busy, Next.js falls back to the next open port, e.g. 3001).
 
-The app will be available at `http://localhost:3000`.
+### Frontend Landing Experience
+
+- The home route renders the new "Unit Customization" landing layout from the provided Stitch design drop.
+- Global styles import Google Material Symbols and include scrollbar/stat-bar helpers used by the landing page.
+- To preview locally, run `npm run dev` and open the reported localhost port.
 
 ### Deploy Smart Contracts
 

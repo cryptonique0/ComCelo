@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -233,5 +234,58 @@ a {
 @keyframes splashOut {
   from { opacity: 1; transform: scale(1); }
   to { opacity: 0; transform: scale(0.98); }
+}
+
+/* Scrollbar + utility helpers used by the landing layout */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111814;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #283930;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3e5246;
+}
+
+.glass-panel {
+  background: rgba(28, 39, 33, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.unit-stat-bar {
+  background: #283930;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.unit-stat-fill {
+  height: 100%;
+  background: #13ec80;
+  transition: width 0.3s ease;
+}
+
+.unit-stat-preview {
+  height: 100%;
+  background: rgba(19, 236, 128, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(19, 236, 128, 0.1);
+  border-color: rgba(19, 236, 128, 0.4);
 }
 
