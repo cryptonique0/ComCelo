@@ -25,6 +25,21 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    "import/no-relative-parent-imports": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "pathGroups": [
+          {
+            "pattern": "@/**",
+            "group": "internal"
+          }
+        ],
+        "alphabeticalOrder": true,
+        "caseInsensitive": true
+      }
+    ],
     "no-console": "off",
     "no-empty-function": "off"
   },

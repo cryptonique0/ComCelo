@@ -66,6 +66,11 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         nextGameId = 0;
     }
 
+    /// @notice Create a new game and invite an opponent
+    /// @dev Initializes game state with WaitingForOpponent status
+    /// @param opponent Address of the invited opponent
+    /// @param options Game configuration (ranked, maxTurns, stake)
+    /// @return gameId Unique identifier for the created game
     function createGame(address opponent, GameOptions calldata options) external whenNotPaused returns (uint256 gameId) {
         require(opponent != address(0), "Invalid opponent");
         require(opponent != msg.sender, "Cannot play against yourself");
@@ -81,6 +86,9 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit GameCreated(gameId, msg.sender, opponent, options);
     }
 
+    /// @notice Accept a game invitation and start the game
+    /// @dev Transitions game from WaitingForOpponent to Active, initializes units
+    /// @param gameId ID of the game to join
     function joinGame(uint256 gameId) external whenNotPaused {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.WaitingForOpponent, "Game not waiting");
@@ -92,12 +100,21 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit GameStarted(gameId, game.player1, game.player2);
     }
 
+    /// @notice Mark game as started (no-op if already started via joinGame)
+    /// @dev Called for explicit game start, but game is already active after opponent joins
+    /// @param gameId ID of the game
     function startGame(uint256 gameId) external whenNotPaused {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
         // Game already started when opponent joined
     }
 
+    /// @notice Move a unit to a new position
+    /// @dev Only current player can move. Unit must be alive. Distance limited to 2 cells (Manhattan)
+    /// @param gameId ID of the game
+    /// @param unitId Index of the unit to move (0-8)
+    /// @param newX New X coordinate (0-2)
+    /// @param newY New Y coordinate (0-2)
     function move(uint256 gameId, uint8 unitId, uint8 newX, uint8 newY) external whenNotPaused nonReentrant {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -117,6 +134,11 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit UnitMoved(gameId, unitId, newX, newY);
     }
 
+    /// @notice Attack an opponent's unit
+    /// @dev Damage = attacker.attack - target.defense (minimum 1). Halved if target defended.
+    /// @param gameId ID of the game
+    /// @param attackerId Index of attacking unit
+    /// @param targetId Index of target unit
     function attack(uint256 gameId, uint8 attackerId, uint8 targetId) external whenNotPaused nonReentrant {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -146,6 +168,10 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit UnitAttacked(gameId, attackerId, targetId, actualDamage);
     }
 
+    /// @notice Set a unit to defend stance (reduces damage taken this turn)
+    /// @dev Defend status is reset at end of turn
+    /// @param gameId ID of the game
+    /// @param unitId Index of the unit to defend
     function defend(uint256 gameId, uint8 unitId) external whenNotPaused nonReentrant {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -159,6 +185,11 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit UnitDefended(gameId, unitId);
     }
 
+    /// @notice Use a skill with a unit (placeholder for future skill system)
+    /// @param gameId ID of the game
+    /// @param unitId Index of the unit using skill
+    /// @param skillId ID of the skill to use
+    /// @param params Encoded skill parameters
     function useSkill(uint256 gameId, uint8 unitId, uint8 skillId, bytes calldata params) external whenNotPaused nonReentrant {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -169,6 +200,9 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit SkillUsed(gameId, unitId, skillId, params);
     }
 
+    /// @notice End current player's turn and switch to opponent
+    /// @dev Increments turn count, resets defend status for all units
+    /// @param gameId ID of the game
     function endTurn(uint256 gameId) external whenNotPaused {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -191,6 +225,8 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit TurnEnded(gameId, game.currentTurn);
     }
 
+    /// @notice Forfeit the game, giving victory to opponent
+    /// @param gameId ID of the game
     function forfeit(uint256 gameId) external whenNotPaused {
         GameState storage game = games[gameId];
         require(game.status == GameStatus.Active, "Game not active");
@@ -201,6 +237,9 @@ contract ComCeloCore is Ownable, Pausable, ReentrancyGuard {
         emit GameFinished(gameId, winner);
     }
 
+    /// @notice Get the complete state of a game
+    /// @param gameId ID of the game
+    /// @return Current GameState struct with all units and metadata
     function getGameState(uint256 gameId) external view returns (GameState memory) {
         return games[gameId];
     }

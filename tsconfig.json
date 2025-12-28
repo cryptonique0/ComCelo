@@ -5,7 +5,17 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/lib": ["lib"],
+      "@/lib/*": ["lib/*"],
+      "@/app": ["app"],
+      "@/app/*": ["app/*"],
+      "@/contracts": ["contracts"],
+      "@/contracts/*": ["contracts/*"],
+      "@/test": ["test"],
+      "@/test/*": ["test/*"],
+      "@/scripts": ["scripts"],
+      "@/scripts/*": ["scripts/*"]
     },
     "esModuleInterop": true,
     "strict": true,
